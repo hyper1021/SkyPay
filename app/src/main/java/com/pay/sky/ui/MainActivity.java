@@ -360,11 +360,7 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         IntentFilter filter = new IntentFilter();
         filter.addAction(SmsReaderService.BROADCAST_STATUS_CHANGED);
         filter.addAction(SmsReceiver.ACTION_SMS_RECEIVED_EVENT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(updateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(updateReceiver, filter);
-        }
+        ContextCompat.registerReceiver(this, updateReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override

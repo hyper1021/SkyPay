@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import com.pay.sky.R;
 import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
@@ -62,10 +63,10 @@ public class MessageDetailDialog extends Dialog {
 
         if (sms.getReadStatus() == 1) {
             tvReadStatus.setText(R.string.read_status);
-            tvReadStatus.setTextColor(getContext().getResources().getColor(R.color.colorSuccessDark));
+            tvReadStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.colorSuccessDark));
         } else {
             tvReadStatus.setText(R.string.unread_status);
-            tvReadStatus.setTextColor(getContext().getResources().getColor(R.color.colorWarningDark));
+            tvReadStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.colorWarningDark));
         }
 
         SmsDatabaseHelper.getInstance().markAsRead(sms.getId());

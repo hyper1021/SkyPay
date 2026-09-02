@@ -3,7 +3,6 @@ package com.pay.sky.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
@@ -41,7 +40,7 @@ public class SmsReceiver extends BroadcastReceiver {
         String serviceCenter = null;
         int protocolId = -1;
         int statusOnIcc = -1;
-        int subId = extractSubscriptionId(intent, messages[0]);
+        int subId = extractSubscriptionId(intent);
 
         for (SmsMessage msg : messages) {
             if (msg == null) {
@@ -122,7 +121,10 @@ public class SmsReceiver extends BroadcastReceiver {
         context.sendBroadcast(broadcast);
     }
 
-    private int extractSubscriptionId(Intent intent, SmsMessage msg) {
+    private int extractSubscriptionId(Intent intent) {
+        if (intent == null) {
+            return -1;
+        }
         if (intent.hasExtra("subscription")) {
             return intent.getIntExtra("subscription", -1);
         }
@@ -132,11 +134,11 @@ public class SmsReceiver extends BroadcastReceiver {
         if (intent.hasExtra("android.telephony.extra.SUBSCRIPTION_INDEX")) {
             return intent.getIntExtra("android.telephony.extra.SUBSCRIPTION_INDEX", -1);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            try {
-                return msg.getSubscriptionId();
-            } catch (Throwable ignored) {
-            }
+        if (intent.hasExtra("simId")) {
+            return intent.getIntExtra("simId", -1);
+        }
+        if (intent.hasExtra("phone")) {
+            return intent.getIntExtra("phone", -1);
         }
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
