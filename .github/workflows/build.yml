@@ -30,17 +30,34 @@ jobs:
           fi
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: |
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+          fi
+          if [ -f "./SkyPay/gradlew" ]; then
+            chmod +x ./SkyPay/gradlew
+          fi
 
-      - name: Build with Gradle
+      - name: Build Production Release APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: |
+          if [ -f "./settings.gradle" ]; then
+            ./gradlew assembleRelease --stacktrace
+          elif [ -f "./SkyPay/settings.gradle" ]; then
+            cd SkyPay
+            ./gradlew assembleRelease --stacktrace
+            cd ..
+            mkdir -p app/build/outputs/apk/release/
+            cp -r SkyPay/app/build/outputs/apk/release/. app/build/outputs/apk/release/ 2>/dev/null || true
+          fi
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: SkyPay-1.0.0-Release
-          path: app/build/outputs/apk/release/
+          path: |
+            app/build/outputs/apk/release/
+            SkyPay/app/build/outputs/apk/release/
