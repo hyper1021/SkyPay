@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">SkyPay</string>
     <string name="service_name">SkyPay SMS Reader</string>
+    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="notification_channel_name">SkyPay Background Service</string>
     <string name="notification_channel_desc">Persistent notification displayed while SkyPay SMS Reader is active</string>
     <string name="notification_title_running">SkyPay SMS Reader Active</string>
