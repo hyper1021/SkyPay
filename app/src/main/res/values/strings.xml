@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkyPay</string>
+    <string name="service_name">SkyPay SMS Reader</string>
+    <string name="notification_channel_name">SkyPay Background Service</string>
+    <string name="notification_channel_desc">Persistent notification displayed while SkyPay SMS Reader is active</string>
+    <string name="notification_title_running">SkyPay SMS Reader Active</string>
+    <string name="notification_text_running">Listening for incoming payment SMS • %1$d detected this session</string>
+    <string name="notification_action_stop">Stop</string>
+    <string name="notification_action_view">View Messages</string>
+    <string name="notification_title_confirm_stop">Confirm Stopping Reader?</string>
+    <string name="notification_text_confirm_stop">Warning: Stopping may prevent payment SMS from being detected.</string>
+    <string name="notification_action_confirm_stop">Confirm Stop</string>
+    <string name="notification_action_keep_running">Keep Running</string>
+    
+    <string name="status_active">ACTIVE</string>
+    <string name="status_stopped">STOPPED</string>
+    <string name="start_reader">Start Reader</string>
+    <string name="stop_reader">Stop Reader</string>
+    <string name="session_count_label">Session SMS</string>
+    <string name="total_count_label">Total Stored</string>
+    <string name="active_sims_label">Detected SIMs</string>
+    
+    <string name="search_hint">Search by sender, keyword or amount…</string>
+    <string name="empty_sms_title">No SMS Messages Yet</string>
+    <string name="empty_sms_desc">When SMS messages are received on this device, they will be captured and displayed here immediately.</string>
+    <string name="empty_search_title">No Matching Messages</string>
+    <string name="empty_search_desc">Try searching with a different sender phone number, bank name, or keyword.</string>
+    
+    <string name="permission_required_title">Permissions Required</string>
+    <string name="permission_required_desc">SkyPay requires SMS and Phone permissions to detect incoming payment messages and identify SIM cards.</string>
+    <string name="grant_permissions">Grant Permissions</string>
+    
+    <string name="battery_opt_title">Battery Optimization Active</string>
+    <string name="battery_opt_desc">To prevent Android or manufacturer task killers from stopping the reader, disable battery optimizations.</string>
+    <string name="fix_battery_optimization">Setup Optimization</string>
+    
+    <string name="dialog_stop_title">Stop SMS Reader?</string>
+    <string name="dialog_stop_message">Are you sure you want to stop the SkyPay SMS Reader? Stopping may prevent payment SMS from being detected and stored.</string>
+    <string name="dialog_stop_confirm">Yes, Stop Reader</string>
+    <string name="dialog_stop_cancel">Keep Running</string>
+    
+    <string name="menu_settings">Settings</string>
+    <string name="menu_battery_setup">Battery &amp; OEM Setup</string>
+    <string name="menu_clear_history">Clear History</string>
+    <string name="menu_about">About SkyPay</string>
+    
+    <string name="settings_title">Settings</string>
+    <string name="settings_payment_gateway_header">Payment Gateway / Webhook (Future)</string>
+    <string name="settings_webhook_url_label">Webhook Endpoint URL</string>
+    <string name="settings_webhook_url_hint">https://api.yourdomain.com/webhook/sms</string>
+    <string name="settings_webhook_secret_label">Webhook Secret / API Token</string>
+    <string name="settings_webhook_secret_hint">Enter authentication secret key</string>
+    <string name="settings_webhook_enabled_label">Enable Webhook Forwarding</string>
+    <string name="settings_webhook_enabled_desc">When enabled, detected SMS messages will be forwarded to your gateway endpoint</string>
+    
+    <string name="settings_reliability_header">Reliability &amp; Persistence</string>
+    <string name="settings_autostart_boot_label">Auto-Start on Device Reboot</string>
+    <string name="settings_autostart_boot_desc">Automatically resume reader service when device boots if it was running before shutdown</string>
+    <string name="settings_save_button">Save Configuration</string>
+    <string name="settings_saved_toast">Settings saved successfully</string>
+    
+    <string name="battery_setup_title">Background Reliability Guide</string>
+    <string name="battery_setup_headline">Keep SkyPay Running 24/7</string>
+    <string name="battery_setup_body">Certain device manufacturers (such as Xiaomi, Samsung, Oppo, Vivo, and OnePlus) enforce aggressive background task termination that can kill foreground services. Follow these instructions to ensure high reliability:</string>
+    <string name="battery_step1_title">1. Disable Android Battery Optimization</string>
+    <string name="battery_step1_desc">Exempt SkyPay from system Doze and App Standby modes.</string>
+    <string name="battery_step1_btn">Open Battery Optimization</string>
+    <string name="battery_step2_title">2. Lock SkyPay in Recent Apps</string>
+    <string name="battery_step2_desc">Open the Recent Apps / Overview screen, long press SkyPay, and tap the Lock icon.</string>
+    <string name="battery_step3_title">3. Allow Auto-Start / Background Launch</string>
+    <string name="battery_step3_desc">In your device settings, enable Auto-Start and allow background activity for SkyPay.</string>
+    <string name="battery_step3_btn">Open App System Settings</string>
+    
+    <string name="detail_title">Message Details</string>
+    <string name="detail_sender_label">Sender / Address</string>
+    <string name="detail_body_label">Full Message Body</string>
+    <string name="detail_received_label">Received Time</string>
+    <string name="detail_sim_label">SIM Information</string>
+    <string name="detail_sms_id_label">SMS ID</string>
+    <string name="detail_thread_id_label">Thread ID</string>
+    <string name="detail_sub_id_label">Subscription ID</string>
+    <string name="detail_service_center_label">Service Center</string>
+    <string name="detail_protocol_label">Protocol Identifier</string>
+    <string name="detail_read_status_label">Read Status</string>
+    <string name="detail_copy_body">Copy Message</string>
+    <string name="detail_delete">Delete Message</string>
+    <string name="detail_close">Close</string>
+    <string name="copied_toast">Message copied to clipboard</string>
+    <string name="deleted_toast">Message deleted</string>
+    <string name="all_cleared_toast">All message history cleared</string>
+    
+    <string name="sim_slot_format">SIM %1$d</string>
+    <string name="sim_unknown">SIM (Unknown)</string>
+    <string name="unread_status">Unread</string>
+    <string name="read_status">Read</string>
+</resources>
