@@ -20,6 +20,8 @@ public class SmsModel {
     private int protocolId;
     private int statusOnIcc;
     private long createdAt;
+    private String webhookStatus;
+    private long webhookTime;
 
     public SmsModel() {
         this.simSlot = -1;
@@ -27,6 +29,8 @@ public class SmsModel {
         this.readStatus = 0;
         this.smsType = "INCOMING";
         this.createdAt = System.currentTimeMillis();
+        this.webhookStatus = "pending";
+        this.webhookTime = 0;
     }
 
     public long getId() {
@@ -141,6 +145,22 @@ public class SmsModel {
         this.createdAt = createdAt;
     }
 
+    public String getWebhookStatus() {
+        return webhookStatus;
+    }
+
+    public void setWebhookStatus(String webhookStatus) {
+        this.webhookStatus = webhookStatus;
+    }
+
+    public long getWebhookTime() {
+        return webhookTime;
+    }
+
+    public void setWebhookTime(long webhookTime) {
+        this.webhookTime = webhookTime;
+    }
+
     public String getFormattedDate() {
         long timeToFormat = timestamp > 0 ? timestamp : createdAt;
         SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy, h:mm:ss a", Locale.ENGLISH);
@@ -155,5 +175,20 @@ public class SmsModel {
             return "Sub " + subId;
         }
         return "SIM";
+    }
+
+    public String getRecognizedSenderLabel() {
+        if (sender == null || sender.trim().isEmpty()) {
+            return "Unknown";
+        }
+        String s = sender.trim().toUpperCase(Locale.ENGLISH);
+        if (s.contains("BKASH")) return "bKash";
+        if (s.contains("NAGAD")) return "Nagad";
+        if (s.contains("ROCKET")) return "Rocket";
+        if (s.contains("UPAY")) return "Upay";
+        if (s.contains("BANK")) return "Bank Alert";
+        if (s.contains("PAY")) return "Payment";
+        if (s.contains("OTP")) return "Verification OTP";
+        return sender;
     }
 }

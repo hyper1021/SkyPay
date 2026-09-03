@@ -1,21 +1,22 @@
 package com.pay.sky.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.pay.sky.R;
+import com.pay.sky.api.SessionManager;
 import com.pay.sky.util.PreferencesManager;
+import com.pay.sky.util.ThemeHelper;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private SwitchMaterial switchReader;
-    private SwitchMaterial switchWebhook;
-    private EditText etWebhookUrl;
-    private EditText etWebhookSecret;
+    private TextView tvCurrentTheme;
+    private SwitchMaterial switchCapture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,26 +30,77 @@ public class SettingsActivity extends AppCompatActivity {
         }
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        switchReader = findViewById(R.id.switchReaderEnabled);
-        switchWebhook = findViewById(R.id.switchWebhook);
-        etWebhookUrl = findViewById(R.id.etWebhookUrl);
-        etWebhookSecret = findViewById(R.id.etWebhookSecret);
-        MaterialButton btnSave = findViewById(R.id.btnSaveSettings);
+        tvCurrentTheme = findViewById(R.id.tvCurrentTheme);
+        switchCapture = findViewById(R.id.switchSettingsCapture);
+
+        updateThemeLabel();
 
         PreferencesManager prefs = PreferencesManager.getInstance();
-        switchReader.setChecked(prefs.isReaderEnabled());
-        switchWebhook.setChecked(prefs.isWebhookEnabled());
-        etWebhookUrl.setText(prefs.getWebhookUrl());
-        etWebhookSecret.setText(prefs.getWebhookSecret());
-
-        btnSave.setOnClickListener(v -> {
-            prefs.setReaderEnabled(switchReader.isChecked());
-            prefs.setWebhookEnabled(switchWebhook.isChecked());
-            prefs.setWebhookUrl(etWebhookUrl.getText().toString().trim());
-            prefs.setWebhookSecret(etWebhookSecret.getText().toString().trim());
-
-            Toast.makeText(this, R.string.settings_saved_toast, Toast.LENGTH_SHORT).show();
-            finish();
+        switchCapture.setChecked(prefs.isReaderEnabled());
+        switchCapture.setOnCheckedChangeListener((btn, isChecked) -> {
+            prefs.setReaderEnabled(isChecked);
+            Toast.makeText(this, isChecked ? "SMS capture enabled" : "SMS capture paused", Toast.LENGTH_SHORT).show();
         });
+
+        findViewById(R.id.rowThemeSelection).setOnClickListener(v -> showThemeDialog());
+        findViewById(R.id.rowMutedSenders).setOnClickListener(v -> {
+            startActivity(new Intent(this, MutedSendersActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out);
+        });
+        findViewById(R.id.rowWebhookForwarding).setOnClickListener(v -> {
+            startActivity(new Intent(this, WebhookSettingsActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out);
+        });
+        findViewById(R.id.rowHelp).setOnClickListener(v -> {
+            startActivity(new Intent(this, HelpActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out);
+        });
+        findViewById(R.id.rowAbout).setOnClickListener(v -> {
+            startActivity(new Intent(this, AboutActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out);
+        });
+        findViewById(R.id.rowLogout).setOnClickListener(v -> showLogoutDialog());
+    }
+
+    private void updateThemeLabel() {
+        int mode = ThemeHelper.getSavedThemeMode(this);
+        if (mode == ThemeHelper.THEME_LIGHT) {
+            tvCurrentTheme.setText("Light");
+        } else if (mode == ThemeHelper.THEME_DARK) {
+            tvCurrentTheme.setText("Dark");
+        } else {
+            tvCurrentTheme.setText("System Default");
+        }
+    }
+
+    private void showThemeDialog() {
+        String[] options = {"System Default", "Light", "Dark"};
+        int current = ThemeHelper.getSavedThemeMode(this);
+        new AlertDialog.Builder(this)
+                .setTitle("Select Theme")
+                .setSingleChoiceItems(options, current, (dialog, which) -> {
+                    ThemeHelper.saveThemeMode(this, which);
+                    updateThemeLabel();
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void showLogoutDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Sign Out")
+                .setMessage("Are you sure you want to sign out of this device?")
+                .setPositiveButton("Sign Out", (dialog, which) -> {
+                    SessionManager.init(this);
+                    SessionManager.getInstance().logout();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    finish();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }
