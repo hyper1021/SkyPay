@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -37,7 +36,6 @@ import com.pay.sky.R;
 import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
 import com.pay.sky.receiver.SmsReceiver;
-import com.pay.sky.service.SmsReaderService;
 import com.pay.sky.util.PreferencesManager;
 import com.pay.sky.util.SimHelper;
 import java.util.ArrayList;
@@ -52,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
     private TextView tvSimInfo;
     private MaterialButton btnToggleService;
     private MaterialCardView cardPermissionWarning;
-    private MaterialCardView cardBatteryWarning;
     private EditText etSearch;
     private ImageView btnClearSearch;
     private TextView tvMessageListCount;
@@ -85,13 +82,6 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         setupRecyclerView();
         setupPermissionLauncher();
         setupListeners();
-
-        PreferencesManager prefs = PreferencesManager.getInstance();
-        if (prefs.isReaderEnabled() && !SmsReaderService.isRunning()) {
-            if (hasRequiredPermissions()) {
-                SmsReaderService.start(this);
-            }
-        }
     }
 
     private void initViews() {
@@ -102,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         tvSimInfo = findViewById(R.id.tvSimInfo);
         btnToggleService = findViewById(R.id.btnToggleService);
         cardPermissionWarning = findViewById(R.id.cardPermissionWarning);
-        cardBatteryWarning = findViewById(R.id.cardBatteryWarning);
         etSearch = findViewById(R.id.etSearch);
         btnClearSearch = findViewById(R.id.btnClearSearch);
         tvMessageListCount = findViewById(R.id.tvMessageListCount);
@@ -122,14 +111,8 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         permissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
-                    checkPermissionsAndBatteryState();
+                    checkPermissionsState();
                     updateServiceStatusUI();
-                    if (hasRequiredPermissions()) {
-                        PreferencesManager prefs = PreferencesManager.getInstance();
-                        if (prefs.isReaderEnabled() && !SmsReaderService.isRunning()) {
-                            SmsReaderService.start(this);
-                        }
-                    }
                 }
         );
     }
@@ -139,11 +122,6 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
 
         Button btnGrant = findViewById(R.id.btnGrantPermissions);
         btnGrant.setOnClickListener(v -> requestAppPermissions());
-
-        Button btnFixBattery = findViewById(R.id.btnFixBattery);
-        btnFixBattery.setOnClickListener(v -> {
-            startActivity(new Intent(this, BatterySetupActivity.class));
-        });
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -169,55 +147,49 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
     }
 
     private void handleToggleService() {
-        if (SmsReaderService.isRunning()) {
-            showStopConfirmationDialog();
+        PreferencesManager prefs = PreferencesManager.getInstance();
+        if (prefs.isReaderEnabled()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.dialog_pause_title)
+                    .setMessage(R.string.dialog_pause_message)
+                    .setPositiveButton(R.string.dialog_pause_confirm, (dialog, which) -> {
+                        prefs.setReaderEnabled(false);
+                        updateServiceStatusUI();
+                    })
+                    .setNegativeButton(R.string.dialog_pause_cancel, null)
+                    .show();
         } else {
             if (!hasRequiredPermissions()) {
                 requestAppPermissions();
                 return;
             }
-            PreferencesManager.getInstance().resetSessionSmsCount();
-            PreferencesManager.getInstance().setReaderEnabled(true);
-            SmsReaderService.start(this);
+            prefs.setReaderEnabled(true);
             updateServiceStatusUI();
         }
     }
 
-    private void showStopConfirmationDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_stop_title)
-                .setMessage(R.string.dialog_stop_message)
-                .setPositiveButton(R.string.dialog_stop_confirm, (dialog, which) -> {
-                    PreferencesManager.getInstance().setReaderEnabled(false);
-                    SmsReaderService.stop(this);
-                    updateServiceStatusUI();
-                })
-                .setNegativeButton(R.string.dialog_stop_cancel, null)
-                .show();
-    }
-
     private void updateServiceStatusUI() {
-        boolean running = SmsReaderService.isRunning();
         PreferencesManager prefs = PreferencesManager.getInstance();
+        boolean enabled = prefs.isReaderEnabled();
 
-        if (running) {
+        if (enabled) {
             tvStatusBadge.setText(R.string.status_active);
             tvStatusBadge.setBackgroundResource(R.drawable.bg_status_active);
             tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.colorSuccessDark));
-            tvServiceSubtext.setText("Actively monitoring incoming payment SMS");
+            tvServiceSubtext.setText(R.string.status_subtext_active);
 
-            btnToggleService.setText(R.string.stop_reader);
-            btnToggleService.setBackgroundColor(ContextCompat.getColor(this, R.color.colorDanger));
-            btnToggleService.setIconResource(R.drawable.ic_power);
-        } else {
-            tvStatusBadge.setText(R.string.status_stopped);
-            tvStatusBadge.setBackgroundResource(R.drawable.bg_status_stopped);
-            tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.colorTextSecondary));
-            tvServiceSubtext.setText("Reader is stopped. Tap button to start.");
-
-            btnToggleService.setText(R.string.start_reader);
+            btnToggleService.setText(R.string.pause_reader);
             btnToggleService.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
             btnToggleService.setIconResource(R.drawable.ic_power);
+        } else {
+            tvStatusBadge.setText(R.string.status_paused);
+            tvStatusBadge.setBackgroundResource(R.drawable.bg_status_stopped);
+            tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.colorTextSecondary));
+            tvServiceSubtext.setText(R.string.status_subtext_paused);
+
+            btnToggleService.setText(R.string.resume_reader);
+            btnToggleService.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSuccess));
+            btnToggleService.setIconResource(R.drawable.ic_check);
         }
 
         tvSessionCount.setText(String.valueOf(prefs.getSessionSmsCount()));
@@ -260,22 +232,11 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         return sms;
     }
 
-    private void checkPermissionsAndBatteryState() {
+    private void checkPermissionsState() {
         if (!hasRequiredPermissions()) {
             cardPermissionWarning.setVisibility(View.VISIBLE);
         } else {
             cardPermissionWarning.setVisibility(View.GONE);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            if (pm != null && !pm.isIgnoringBatteryOptimizations(getPackageName())) {
-                cardBatteryWarning.setVisibility(View.VISIBLE);
-            } else {
-                cardBatteryWarning.setVisibility(View.GONE);
-            }
-        } else {
-            cardBatteryWarning.setVisibility(View.GONE);
         }
     }
 
@@ -312,9 +273,6 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
             loadMessages();
             updateServiceStatusUI();
             return true;
-        } else if (id == R.id.action_battery_setup) {
-            startActivity(new Intent(this, BatterySetupActivity.class));
-            return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
@@ -345,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
     private void showAboutDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("About SkyPay")
-                .setMessage("SkyPay SMS Reader\nVersion 1.0.0\n\nAutomated payment SMS listener and local transaction store for future payment-gateway integration.")
+                .setMessage("SkyPay SMS Reader\nVersion 1.0.0\n\nEvent-driven SMS listener and local transaction store for future payment-gateway integration.")
                 .setPositiveButton("OK", null)
                 .show();
     }
@@ -353,12 +311,11 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
     @Override
     protected void onResume() {
         super.onResume();
-        checkPermissionsAndBatteryState();
+        checkPermissionsState();
         updateServiceStatusUI();
         loadMessages();
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(SmsReaderService.BROADCAST_STATUS_CHANGED);
         filter.addAction(SmsReceiver.ACTION_SMS_RECEIVED_EVENT);
         ContextCompat.registerReceiver(this, updateReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }

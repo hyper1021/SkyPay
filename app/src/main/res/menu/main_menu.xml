@@ -7,11 +7,6 @@
         android:title="Refresh"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_battery_setup"
-        android:icon="@drawable/ic_battery"
-        android:title="@string/menu_battery_setup"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/menu_settings"

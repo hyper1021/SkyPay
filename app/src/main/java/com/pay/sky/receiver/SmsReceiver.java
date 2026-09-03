@@ -1,21 +1,33 @@
 package com.pay.sky.receiver;
 
+import android.Manifest;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import com.pay.sky.R;
+import com.pay.sky.SkyPayApp;
 import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
-import com.pay.sky.service.SmsReaderService;
+import com.pay.sky.ui.MainActivity;
 import com.pay.sky.util.PaymentGatewayDispatcher;
 import com.pay.sky.util.PreferencesManager;
 import com.pay.sky.util.SimHelper;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SmsReceiver extends BroadcastReceiver {
 
     public static final String ACTION_SMS_RECEIVED_EVENT = "com.pay.sky.broadcast.SMS_RECEIVED_EVENT";
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -23,6 +35,19 @@ public class SmsReceiver extends BroadcastReceiver {
             return;
         }
 
+        final PendingResult pendingResult = goAsync();
+        final Context appContext = context.getApplicationContext();
+
+        EXECUTOR.execute(() -> {
+            try {
+                processIncomingSms(appContext, intent);
+            } finally {
+                pendingResult.finish();
+            }
+        });
+    }
+
+    private void processIncomingSms(Context context, Intent intent) {
         SmsMessage[] messages;
         try {
             messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
@@ -31,6 +56,12 @@ public class SmsReceiver extends BroadcastReceiver {
         }
 
         if (messages == null || messages.length == 0) {
+            return;
+        }
+
+        PreferencesManager.init(context);
+        PreferencesManager prefs = PreferencesManager.getInstance();
+        if (!prefs.isReaderEnabled()) {
             return;
         }
 
@@ -102,23 +133,51 @@ public class SmsReceiver extends BroadcastReceiver {
         sms.setSmsType("INCOMING");
         sms.setCreatedAt(System.currentTimeMillis());
 
+        SmsDatabaseHelper.init(context);
         SmsDatabaseHelper db = SmsDatabaseHelper.getInstance();
         if (db != null) {
             long insertedId = db.insertSms(sms);
             sms.setSmsId(String.valueOf(insertedId));
         }
 
-        PreferencesManager prefs = PreferencesManager.getInstance();
-        if (prefs != null) {
-            prefs.incrementSessionSmsCount();
-        }
-
-        SmsReaderService.notifySmsReceived(context);
+        prefs.incrementSessionSmsCount();
         PaymentGatewayDispatcher.dispatch(context, sms);
+        postAlertNotification(context, sms);
 
         Intent broadcast = new Intent(ACTION_SMS_RECEIVED_EVENT);
         broadcast.setPackage(context.getPackageName());
         context.sendBroadcast(broadcast);
+    }
+
+    private void postAlertNotification(Context context, SmsModel sms) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+
+        try {
+            Intent viewIntent = new Intent(context, MainActivity.class);
+            viewIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    context, (int) System.currentTimeMillis(), viewIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, SkyPayApp.CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_stat_skypay)
+                    .setContentTitle(context.getString(R.string.notification_alert_title))
+                    .setContentText(sms.getSender() + ": " + sms.getBody())
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(sms.getBody()))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent);
+
+            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+            int notifId = (int) (sms.getId() > 0 ? sms.getId() : (System.currentTimeMillis() % 100000));
+            manager.notify(notifId, builder.build());
+        } catch (Exception ignored) {
+        }
     }
 
     private int extractSubscriptionId(Intent intent) {

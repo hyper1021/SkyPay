@@ -11,7 +11,6 @@ public class PreferencesManager {
     private static final String KEY_WEBHOOK_ENABLED = "key_webhook_enabled";
     private static final String KEY_WEBHOOK_URL = "key_webhook_url";
     private static final String KEY_WEBHOOK_SECRET = "key_webhook_secret";
-    private static final String KEY_AUTOSTART_BOOT = "key_autostart_boot";
 
     private static PreferencesManager instance;
     private final SharedPreferences prefs;
@@ -31,7 +30,7 @@ public class PreferencesManager {
     }
 
     public boolean isReaderEnabled() {
-        return prefs.getBoolean(KEY_READER_ENABLED, false);
+        return prefs.getBoolean(KEY_READER_ENABLED, true);
     }
 
     public void setReaderEnabled(boolean enabled) {
@@ -74,13 +73,5 @@ public class PreferencesManager {
 
     public void setWebhookSecret(String secret) {
         prefs.edit().putString(KEY_WEBHOOK_SECRET, secret).apply();
-    }
-
-    public boolean isAutoStartOnBoot() {
-        return prefs.getBoolean(KEY_AUTOSTART_BOOT, true);
-    }
-
-    public void setAutoStartOnBoot(boolean autoStart) {
-        prefs.edit().putBoolean(KEY_AUTOSTART_BOOT, autoStart).apply();
     }
 }

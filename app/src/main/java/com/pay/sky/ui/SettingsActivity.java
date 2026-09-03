@@ -12,10 +12,10 @@ import com.pay.sky.util.PreferencesManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private SwitchMaterial switchReader;
     private SwitchMaterial switchWebhook;
     private EditText etWebhookUrl;
     private EditText etWebhookSecret;
-    private SwitchMaterial switchAutoStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,23 +29,23 @@ public class SettingsActivity extends AppCompatActivity {
         }
         toolbar.setNavigationOnClickListener(v -> finish());
 
+        switchReader = findViewById(R.id.switchReaderEnabled);
         switchWebhook = findViewById(R.id.switchWebhook);
         etWebhookUrl = findViewById(R.id.etWebhookUrl);
         etWebhookSecret = findViewById(R.id.etWebhookSecret);
-        switchAutoStart = findViewById(R.id.switchAutoStart);
         MaterialButton btnSave = findViewById(R.id.btnSaveSettings);
 
         PreferencesManager prefs = PreferencesManager.getInstance();
+        switchReader.setChecked(prefs.isReaderEnabled());
         switchWebhook.setChecked(prefs.isWebhookEnabled());
         etWebhookUrl.setText(prefs.getWebhookUrl());
         etWebhookSecret.setText(prefs.getWebhookSecret());
-        switchAutoStart.setChecked(prefs.isAutoStartOnBoot());
 
         btnSave.setOnClickListener(v -> {
+            prefs.setReaderEnabled(switchReader.isChecked());
             prefs.setWebhookEnabled(switchWebhook.isChecked());
             prefs.setWebhookUrl(etWebhookUrl.getText().toString().trim());
             prefs.setWebhookSecret(etWebhookSecret.getText().toString().trim());
-            prefs.setAutoStartOnBoot(switchAutoStart.isChecked());
 
             Toast.makeText(this, R.string.settings_saved_toast, Toast.LENGTH_SHORT).show();
             finish();
