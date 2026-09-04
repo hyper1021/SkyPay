@@ -1,0 +1,5 @@
+-keep class com.pay.sky.api.** { *; }
+-keep class com.pay.sky.data.** { *; }
+-keep class com.pay.sky.receiver.** { *; }
+-keep class com.pay.sky.ui.** { *; }
+-keep class com.pay.sky.util.** { *; }
