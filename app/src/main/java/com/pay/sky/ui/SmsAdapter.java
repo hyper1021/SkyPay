@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.pay.sky.R;
 import com.pay.sky.data.SmsModel;
+import com.pay.sky.util.HapticHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHolder> {
         }
         holder.tvAvatar.setText(avatar);
 
-        holder.tvTimestamp.setText(sms.getFormattedDate());
+        holder.tvTimestamp.setText(sms.getRelativeTimeSpan());
         holder.tvBody.setText(sms.getBody());
         holder.tvSimBadge.setText(sms.getSimSlotDisplay());
 
@@ -74,6 +75,7 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHolder> {
         }
 
         holder.itemView.setOnClickListener(v -> {
+            HapticHelper.performHaptic(v);
             if (listener != null) {
                 listener.onItemClick(sms);
             }

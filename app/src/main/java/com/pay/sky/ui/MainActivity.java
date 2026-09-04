@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.pay.sky.R;
 import com.pay.sky.api.SessionManager;
@@ -36,6 +38,8 @@ import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
 import com.pay.sky.receiver.SmsReceiver;
 import com.pay.sky.ui.view.SmsBarChartView;
+import com.pay.sky.util.HapticHelper;
+import com.pay.sky.util.OrientationHelper;
 import com.pay.sky.util.PreferencesManager;
 import com.pay.sky.util.ThemeHelper;
 import java.util.ArrayList;
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
 
     private int currentChartDays = 7;
     private ActivityResultLauncher<String[]> permissionLauncher;
+    private MenuItem powerPauseMenuItem;
 
     private final BroadcastReceiver smsUpdateReceiver = new BroadcastReceiver() {
         @Override
@@ -75,13 +80,15 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ThemeHelper.applyTheme(this);
+        OrientationHelper.applyOrientation(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.app_name);
-        toolbar.setLogo(R.drawable.ic_skypay_logo);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         initViews();
         setupRecyclerView();
@@ -134,13 +141,26 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
             new Handler(Looper.getMainLooper()).postDelayed(() -> swipeRefresh.setRefreshing(false), 500);
         });
 
-        btnMode7Days.setOnClickListener(v -> setChartMode(7));
-        btnMode30Days.setOnClickListener(v -> setChartMode(30));
+        btnMode7Days.setOnClickListener(v -> {
+            HapticHelper.performHaptic(v);
+            setChartMode(7);
+        });
+
+        btnMode30Days.setOnClickListener(v -> {
+            HapticHelper.performHaptic(v);
+            setChartMode(30);
+        });
 
         Button btnGrant = findViewById(R.id.btnGrantPermissions);
-        btnGrant.setOnClickListener(v -> requestRequiredPermissions());
+        btnGrant.setOnClickListener(v -> {
+            HapticHelper.performHaptic(v);
+            requestRequiredPermissions();
+        });
 
-        tvStatusBadge.setOnClickListener(v -> toggleListenerState());
+        tvStatusBadge.setOnClickListener(v -> {
+            HapticHelper.performHaptic(v);
+            handlePowerToggle();
+        });
     }
 
     private void setChartMode(int days) {
@@ -150,52 +170,102 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
             btnMode7Days.setTextColor(0xFFFFFFFF);
             btnMode30Days.setBackgroundColor(0x00000000);
             btnMode30Days.setTextColor(ContextCompat.getColor(this, R.color.colorTextSecondary));
+
+            ViewGroup.LayoutParams lp = barChartView.getLayoutParams();
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            barChartView.setLayoutParams(lp);
         } else {
             btnMode30Days.setBackgroundResource(R.drawable.bg_btn_primary);
             btnMode30Days.setTextColor(0xFFFFFFFF);
             btnMode7Days.setBackgroundColor(0x00000000);
             btnMode7Days.setTextColor(ContextCompat.getColor(this, R.color.colorTextSecondary));
+
+            int targetWidth = (int) (30 * getResources().getDisplayMetrics().density * 26);
+            ViewGroup.LayoutParams lp = barChartView.getLayoutParams();
+            lp.width = Math.max(targetWidth, getResources().getDisplayMetrics().widthPixels);
+            barChartView.setLayoutParams(lp);
         }
         updateChartData();
     }
 
-    private void toggleListenerState() {
+    private void handlePowerToggle() {
         PreferencesManager prefs = PreferencesManager.getInstance();
-        boolean current = prefs.isReaderEnabled();
-        if (current) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.dialog_pause_title)
-                    .setMessage(R.string.dialog_pause_message)
-                    .setPositiveButton(R.string.dialog_pause_confirm, (dialog, which) -> {
-                        prefs.setReaderEnabled(false);
-                        updateStatusPill();
-                    })
-                    .setNegativeButton(R.string.dialog_pause_cancel, null)
-                    .show();
-        } else {
-            prefs.setReaderEnabled(true);
+        boolean isPaused = prefs.isSystemPaused();
+        if (isPaused) {
+            prefs.setSystemPaused(false);
             updateStatusPill();
+            updatePowerMenuIcon();
+            Toast.makeText(this, "SkyPay resumed", Toast.LENGTH_SHORT).show();
+        } else {
+            showPauseConfirmationDialog();
         }
+    }
+
+    private void showPauseConfirmationDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirm_pause, null);
+        dialog.setView(view);
+
+        MaterialButton btnCancel = view.findViewById(R.id.btnCancelPause);
+        MaterialButton btnConfirm = view.findViewById(R.id.btnConfirmPause);
+        ProgressBar pbLoading = view.findViewById(R.id.pbPauseLoading);
+
+        btnCancel.setOnClickListener(v -> {
+            HapticHelper.performHaptic(v);
+            dialog.dismiss();
+        });
+
+        btnConfirm.setOnClickListener(v -> {
+            HapticHelper.performActionHaptic(this);
+            btnConfirm.setEnabled(false);
+            btnConfirm.setText("");
+            pbLoading.setVisibility(View.VISIBLE);
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                PreferencesManager.getInstance().setSystemPaused(true);
+                updateStatusPill();
+                updatePowerMenuIcon();
+                dialog.dismiss();
+                Toast.makeText(MainActivity.this, "SkyPay paused", Toast.LENGTH_SHORT).show();
+            }, 400);
+        });
+
+        dialog.show();
     }
 
     private void updateStatusPill() {
         PreferencesManager prefs = PreferencesManager.getInstance();
-        boolean enabled = prefs.isReaderEnabled();
-        if (enabled) {
+        boolean isPaused = prefs.isSystemPaused();
+        if (!isPaused) {
             tvStatusBadge.setText(R.string.status_active);
             tvStatusBadge.setBackgroundResource(R.drawable.bg_status_active);
             tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.colorSuccessDark));
-            tvListenerModeSubtext.setText(R.string.status_subtext_active);
+            tvListenerModeSubtext.setText("Event-driven standby • Wakes on SMS");
         } else {
             tvStatusBadge.setText(R.string.status_paused);
             tvStatusBadge.setBackgroundResource(R.drawable.bg_status_stopped);
             tvStatusBadge.setTextColor(ContextCompat.getColor(this, R.color.colorTextSecondary));
-            tvListenerModeSubtext.setText(R.string.status_subtext_paused);
+            tvListenerModeSubtext.setText("Forwarding suspended • Tap to resume");
+        }
+    }
+
+    private void updatePowerMenuIcon() {
+        if (powerPauseMenuItem != null) {
+            boolean isPaused = PreferencesManager.getInstance().isSystemPaused();
+            if (isPaused) {
+                powerPauseMenuItem.setIcon(R.drawable.ic_play);
+                powerPauseMenuItem.setTitle("Resume");
+            } else {
+                powerPauseMenuItem.setIcon(R.drawable.ic_power);
+                powerPauseMenuItem.setTitle("Pause");
+            }
         }
     }
 
     private void loadDashboardData() {
         updateStatusPill();
+        updatePowerMenuIcon();
+
         SmsDatabaseHelper db = SmsDatabaseHelper.getInstance();
         if (db == null) {
             return;
@@ -212,11 +282,11 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         tvStatTotal.setText(String.valueOf(total));
         tvStat7Days.setText(String.valueOf(last7));
         tvStat30Days.setText(String.valueOf(last30));
-        tvTotalMessagesCount.setText(total + " records");
+        tvTotalMessagesCount.setText(total + (total == 1 ? " record" : " records"));
 
         updateChartData();
         updateSenderAnalytics(db);
-        updateRecentTransactions(db);
+        updateRecentMessages(db);
     }
 
     private void updateChartData() {
@@ -237,13 +307,13 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         if (max > 0) {
             tvChartHighestDay.setText("Peak: " + max + " SMS on " + maxDate);
         } else {
-            tvChartHighestDay.setText("Tap bar for daily transaction count");
+            tvChartHighestDay.setText("Tap bar for daily details");
         }
     }
 
     private void updateSenderAnalytics(SmsDatabaseHelper db) {
         layoutSenderAnalytics.removeAllViews();
-        List<SmsDatabaseHelper.SenderStat> senders = db.getTopSenders(4);
+        List<SmsDatabaseHelper.SenderStat> senders = db.getTopSenders(5);
 
         if (senders.isEmpty()) {
             tvEmptySenders.setVisibility(View.VISIBLE);
@@ -252,21 +322,23 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
         tvEmptySenders.setVisibility(View.GONE);
 
         LayoutInflater inflater = LayoutInflater.from(this);
+        int rank = 1;
         for (SmsDatabaseHelper.SenderStat stat : senders) {
             View view = inflater.inflate(R.layout.item_sender_analytic, layoutSenderAnalytics, false);
             TextView tvSenderName = view.findViewById(R.id.tvAnalyticSender);
             TextView tvSenderCount = view.findViewById(R.id.tvAnalyticCount);
             ProgressBar pbSender = view.findViewById(R.id.pbAnalyticPercent);
 
-            tvSenderName.setText(stat.sender);
+            tvSenderName.setText(rank + ". " + stat.sender);
             tvSenderCount.setText(stat.count + " (" + String.format("%.0f%%", stat.percentage) + ")");
             pbSender.setProgress((int) stat.percentage);
 
             layoutSenderAnalytics.addView(view);
+            rank++;
         }
     }
 
-    private void updateRecentTransactions(SmsDatabaseHelper db) {
+    private void updateRecentMessages(SmsDatabaseHelper db) {
         List<SmsModel> recent = db.getRecentSms(10);
         smsAdapter.setData(recent);
 
@@ -319,15 +391,17 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        powerPauseMenuItem = menu.findItem(R.id.action_power_pause);
+        updatePowerMenuIcon();
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        HapticHelper.performHaptic(findViewById(android.R.id.content));
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            loadDashboardData();
-            Toast.makeText(this, "Refreshed", Toast.LENGTH_SHORT).show();
+        if (id == R.id.action_power_pause) {
+            handlePowerToggle();
             return true;
         } else if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
@@ -335,6 +409,12 @@ public class MainActivity extends AppCompatActivity implements SmsAdapter.OnItem
             return true;
         } else if (id == R.id.action_clear_history) {
             showClearHistoryDialog();
+            return true;
+        } else if (id == R.id.action_help) {
+            Intent helpIntent = new Intent(this, HelpActivity.class);
+            helpIntent.putExtra(HelpActivity.EXTRA_HELP_MODE, HelpActivity.MODE_USER_DOCS);
+            startActivity(helpIntent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out);
             return true;
         } else if (id == R.id.action_about) {
             startActivity(new Intent(this, AboutActivity.class));

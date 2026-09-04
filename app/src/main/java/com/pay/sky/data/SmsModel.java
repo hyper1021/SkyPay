@@ -3,6 +3,7 @@ package com.pay.sky.data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class SmsModel {
 
@@ -164,7 +165,32 @@ public class SmsModel {
     public String getFormattedDate() {
         long timeToFormat = timestamp > 0 ? timestamp : createdAt;
         SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy, h:mm:ss a", Locale.ENGLISH);
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         return sdf.format(new Date(timeToFormat));
+    }
+
+    public String getRelativeTimeSpan() {
+        long timeToFormat = timestamp > 0 ? timestamp : createdAt;
+        long now = System.currentTimeMillis();
+        long diff = now - timeToFormat;
+
+        if (diff < 60_000) {
+            return "Just now";
+        } else if (diff < 3600_000) {
+            long mins = Math.max(1, diff / 60_000);
+            return mins + (mins == 1 ? " minute ago" : " minutes ago");
+        } else if (diff < 86400_000) {
+            long hours = Math.max(1, diff / 3600_000);
+            return hours + (hours == 1 ? " hour ago" : " hours ago");
+        } else if (diff < 172800_000) {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
+            timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+            return "Yesterday, " + timeFormat.format(new Date(timeToFormat));
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, h:mm a", Locale.ENGLISH);
+            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+            return sdf.format(new Date(timeToFormat));
+        }
     }
 
     public String getSimSlotDisplay() {
