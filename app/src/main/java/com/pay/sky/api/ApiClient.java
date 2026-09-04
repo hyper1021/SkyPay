@@ -129,7 +129,7 @@ public class ApiClient {
 
         if (statusCode >= 200 && statusCode < 300) {
             String res = sb.toString().trim();
-            return res.isEmpty() ? "{"success":true}" : res;
+            return res.isEmpty() ? "{\"success\":true}" : res;
         } else {
             throw new Exception("Server returned HTTP " + statusCode);
         }
