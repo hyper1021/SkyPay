@@ -36,14 +36,15 @@ public class ApiClient {
         void onResult(boolean success, String description, boolean requireLogout);
     }
 
-    public static void login(String username, String password, String deviceId, ApiCallback callback) {
+    public static void login(String email, String deviceKey, ApiCallback callback) {
         EXECUTOR.execute(() -> {
             try {
                 JSONObject requestJson = new JSONObject();
-                requestJson.put("username", username);
-                requestJson.put("password", password);
-                requestJson.put("device_id", deviceId);
+                requestJson.put("email", email);
+                requestJson.put("device_key", deviceKey);
+                requestJson.put("device_token", deviceKey);
                 requestJson.put("app_version", "1.0.0");
+                requestJson.put("platform", "android");
                 requestJson.put("android_version", Build.VERSION.RELEASE);
                 requestJson.put("sdk_int", Build.VERSION.SDK_INT);
                 requestJson.put("model", Build.MODEL);
@@ -57,7 +58,7 @@ public class ApiClient {
                 if (success || responseJson.has("token") || responseJson.has("device_token")) {
                     MAIN_HANDLER.post(() -> callback.onSuccess(responseJson));
                 } else {
-                    String message = responseJson.optString("message", responseJson.optString("error", "Authentication failed"));
+                    String message = responseJson.optString("message", responseJson.optString("error", "Invalid email or password."));
                     MAIN_HANDLER.post(() -> callback.onError(message));
                 }
             } catch (Exception e) {
@@ -65,6 +66,10 @@ public class ApiClient {
                 MAIN_HANDLER.post(() -> callback.onError(message));
             }
         });
+    }
+
+    public static void login(String email, String deviceKey, String deviceId, ApiCallback callback) {
+        login(email, deviceKey, callback);
     }
 
     public static void pingDevice(String token, String deviceId, String email, PingCallback callback) {

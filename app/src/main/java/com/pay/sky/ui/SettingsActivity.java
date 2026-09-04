@@ -153,14 +153,7 @@ public class SettingsActivity extends BaseActivity {
             });
         }
 
-        View rowDataPayload = findViewById(R.id.rowDataPayload);
-        if (rowDataPayload != null) {
-            rowDataPayload.setOnClickListener(v -> {
-                HapticUtil.vibrateClick(this);
-                startActivity(new Intent(this, PostBodyActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out);
-            });
-        }
+
 
         findViewById(R.id.rowQueueMessages).setOnClickListener(v -> {
             HapticUtil.vibrateClick(this);
@@ -282,7 +275,7 @@ public class SettingsActivity extends BaseActivity {
     private void showLogoutDialog() {
         CustomConfirmationDialog.show(
                 this,
-                "lottie/logout_success.json",
+                "lottie/sure.json",
                 "Sign Out?",
                 "Are you sure you want to log out? Your authenticated device token and local message records will be cleared from this device.",
                 "Sign Out",

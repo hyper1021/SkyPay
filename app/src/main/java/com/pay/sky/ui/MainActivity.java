@@ -173,7 +173,7 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
     private void showPingErrorCustomDialog(String desc, boolean logout) {
         CustomConfirmationDialog.show(
                 this,
-                "lottie/server_connection_failed.json",
+                "lottie/warning.json",
                 "Connection Alert",
                 (desc != null && !desc.trim().isEmpty()) ? desc.trim() : "Device token has expired or is unauthorized.",
                 "OK",
@@ -268,7 +268,7 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
     private void showPauseConfirmationDialog() {
         CustomConfirmationDialog.show(
                 this,
-                "lottie/warning_alert.json",
+                "lottie/stop.json",
                 "Pause POS Service?",
                 "Are you sure you want to pause real-time SMS capture and webhook forwarding? The service will remain in standby until resumed.",
                 "Pause Service",
@@ -285,7 +285,7 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
     private void confirmClearHistory() {
         CustomConfirmationDialog.show(
                 this,
-                "lottie/delete_confirmation.json",
+                "lottie/emty.json",
                 "Clear Message History?",
                 "Are you sure you want to clear all message records from this device? Queued messages will also be removed.",
                 "Clear All",
@@ -303,7 +303,7 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
     private void confirmSignOut() {
         CustomConfirmationDialog.show(
                 this,
-                "lottie/logout_success.json",
+                "lottie/sure.json",
                 "Sign Out?",
                 "Are you sure you want to sign out? Your authenticated device token and local message records will be cleared from this device.",
                 "Sign Out",

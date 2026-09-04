@@ -66,7 +66,7 @@ public class QueueMessagesActivity extends BaseActivity {
             HapticUtil.vibrateClick(this);
             CustomConfirmationDialog.show(
                     this,
-                    "lottie/delete_confirmation.json",
+                    "lottie/emty.json",
                     "Clear Queue?",
                     "Are you sure you want to remove all pending queued messages? These delivery attempts will not be retried.",
                     "Clear All",
