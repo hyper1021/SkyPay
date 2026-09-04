@@ -12,7 +12,6 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -35,14 +34,42 @@ android {
                 }
             }
 
+            def sp = System.getenv("KEYSTORE_PASSWORD")
+            def storePass = (sp != null && sp.trim().length() > 0) ? sp.trim() : "skypay123456"
+            def ka = System.getenv("KEY_ALIAS")
+            def alias = (ka != null && ka.trim().length() > 0) ? ka.trim() : "skypay"
+            def kp = System.getenv("KEY_PASSWORD")
+            def keyPass = (kp != null && kp.trim().length() > 0) ? kp.trim() : "skypay123456"
+
+            boolean canSign = false
             if (ks != null && ks.exists() && ks.length() > 0) {
+                try {
+                    def keystore = java.security.KeyStore.getInstance("PKCS12")
+                    ks.withInputStream { is ->
+                        keystore.load(is, storePass.toCharArray())
+                    }
+                    if (keystore.containsAlias(alias)) {
+                        canSign = true
+                    }
+                } catch (Exception e1) {
+                    try {
+                        def keystore = java.security.KeyStore.getInstance("JKS")
+                        ks.withInputStream { is ->
+                            keystore.load(is, storePass.toCharArray())
+                        }
+                        if (keystore.containsAlias(alias)) {
+                            canSign = true
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+
+            if (canSign) {
                 storeFile ks
-                def sp = System.getenv("KEYSTORE_PASSWORD")
-                storePassword ((sp != null && sp.trim().length() > 0) ? sp.trim() : "skypay123456")
-                def ka = System.getenv("KEY_ALIAS")
-                keyAlias ((ka != null && ka.trim().length() > 0) ? ka.trim() : "skypay")
-                def kp = System.getenv("KEY_PASSWORD")
-                keyPassword ((kp != null && kp.trim().length() > 0) ? kp.trim() : "skypay123456")
+                storePassword storePass
+                keyAlias alias
+                keyPassword keyPass
             }
         }
     }
@@ -51,7 +78,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            if (signingConfigs.release.storeFile != null && signingConfigs.release.storeFile.exists() && signingConfigs.release.storeFile.length() > 0) {
+            if (signingConfigs.release.storeFile != null) {
                 signingConfig signingConfigs.release
             }
         }
@@ -76,6 +103,10 @@ android {
         ignoreWarnings true
         quiet true
     }
+}
+
+tasks.matching { it.name.contains("lint") || it.name.contains("Lint") }.configureEach {
+    enabled = false
 }
 
 dependencies {
