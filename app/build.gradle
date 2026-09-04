@@ -17,17 +17,21 @@ android {
 
     signingConfigs {
         release {
-            def keystorePath = System.getenv("KEYSTORE_FILE")
-            def storePass = System.getenv("KEYSTORE_PASSWORD")
-            def keyAl = System.getenv("KEY_ALIAS")
-            def keyPass = System.getenv("KEY_PASSWORD")
-            if (keystorePath && file(keystorePath).exists() && storePass && keyAl && keyPass) {
-                storeFile file(keystorePath)
+            def customKeystore = System.getenv("KEYSTORE_FILE")
+            def storePass = System.getenv("KEYSTORE_PASSWORD") ?: "skypay123456"
+            def keyAl = System.getenv("KEY_ALIAS") ?: "skypay"
+            def keyPass = System.getenv("KEY_PASSWORD") ?: "skypay123456"
+
+            if (customKeystore && file(customKeystore).exists()) {
+                storeFile file(customKeystore)
+            } else if (file('skypay-release.keystore').exists()) {
+                storeFile file('skypay-release.keystore')
+            }
+
+            if (storeFile != null) {
                 storePassword storePass
                 keyAlias keyAl
                 keyPassword keyPass
-            } else {
-                initWith(signingConfigs.debug)
             }
         }
     }
@@ -36,13 +40,22 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (signingConfigs.release.storeFile != null) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
         }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 

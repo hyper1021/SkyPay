@@ -54,140 +54,45 @@
                 app:cardBackgroundColor="@color/colorCardBackground">
 
                 <LinearLayout
+                    android:id="@+id/rowThemeSelection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="18dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <LinearLayout
-                        android:id="@+id/rowThemeSelection"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="18dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Application Theme"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvCurrentTheme"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="System Default"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
-                            android:contentDescription="Select Theme" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorDivider" />
-
-                    <LinearLayout
-                        android:id="@+id/rowOrientationSelection"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="18dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Screen Orientation"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvCurrentOrientation"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="System Default"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
-                            android:contentDescription="Select Orientation" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorDivider" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="18dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Haptic Feedback"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Tactile response on button taps and actions"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/switchHapticFeedback"
+                        <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="Application Theme"
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvCurrentTheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="System Default"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp" />
                     </LinearLayout>
 
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_back"
+                        android:rotation="180"
+                        android:contentDescription="Select" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -258,47 +163,6 @@
                         android:background="@color/colorDivider" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="18dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Disable Notifications"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Suppress popups while continuing backend sync"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/switchGlobalNotifications"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorDivider" />
-
-                    <LinearLayout
                         android:id="@+id/rowMutedSenders"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -334,8 +198,8 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
+                            android:src="@drawable/ic_back"
+                            android:rotation="180"
                             android:contentDescription="Open" />
                     </LinearLayout>
 
@@ -363,144 +227,44 @@
                 app:cardBackgroundColor="@color/colorCardBackground">
 
                 <LinearLayout
+                    android:id="@+id/rowWebhookForwarding"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="18dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <LinearLayout
-                        android:id="@+id/rowWebhookForwarding"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="18dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:text="Webhook Forwarding"
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Webhook Forwarding"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Forward payment SMS to remote endpoint"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
-                            android:contentDescription="Open" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Forward payment SMS to remote endpoint"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorDivider" />
-
-                    <LinearLayout
-                        android:id="@+id/rowDataPayload"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="18dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Data Payload"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Customize webhook keys, headers, and HTTP method"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
-                            android:contentDescription="Open" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorDivider" />
-
-                    <LinearLayout
-                        android:id="@+id/rowQueueMessages"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="18dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Queue Messages"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvQueueSubtext"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Pending offline webhook retries"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
-                            android:contentDescription="Open" />
-                    </LinearLayout>
-
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_back"
+                        android:rotation="180"
+                        android:contentDescription="Open" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -543,7 +307,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Help &amp; Support"
+                            android:text="Help &amp; Android Permissions"
                             android:textColor="@color/colorTextPrimary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -551,8 +315,8 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
+                            android:src="@drawable/ic_back"
+                            android:rotation="180"
                             android:contentDescription="Open" />
                     </LinearLayout>
 
@@ -583,8 +347,8 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/colorTextSecondary"
+                            android:src="@drawable/ic_back"
+                            android:rotation="180"
                             android:contentDescription="Open" />
                     </LinearLayout>
 
@@ -616,7 +380,6 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_logout"
-                            app:tint="@color/colorDanger"
                             android:contentDescription="Logout" />
                     </LinearLayout>
 

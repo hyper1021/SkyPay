@@ -6,14 +6,11 @@ import android.content.SharedPreferences;
 public class PreferencesManager {
 
     private static final String PREF_NAME = "skypay_prefs";
-    private static final String KEY_SYSTEM_PAUSED = "key_system_paused";
+    private static final String KEY_READER_ENABLED = "key_reader_enabled";
     private static final String KEY_SESSION_COUNT = "key_session_count";
     private static final String KEY_WEBHOOK_ENABLED = "key_webhook_enabled";
     private static final String KEY_WEBHOOK_URL = "key_webhook_url";
     private static final String KEY_WEBHOOK_SECRET = "key_webhook_secret";
-    private static final String KEY_GLOBAL_NOTIFICATIONS_DISABLED = "key_global_notif_disabled";
-    private static final String KEY_ORIENTATION_MODE = "key_orientation_mode";
-    private static final String KEY_HAPTIC_ENABLED = "key_haptic_enabled";
 
     private static PreferencesManager instance;
     private final SharedPreferences prefs;
@@ -32,44 +29,12 @@ public class PreferencesManager {
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    public boolean isSystemPaused() {
-        return prefs.getBoolean(KEY_SYSTEM_PAUSED, false);
-    }
-
-    public void setSystemPaused(boolean paused) {
-        prefs.edit().putBoolean(KEY_SYSTEM_PAUSED, paused).apply();
-    }
-
     public boolean isReaderEnabled() {
-        return !isSystemPaused();
+        return prefs.getBoolean(KEY_READER_ENABLED, true);
     }
 
     public void setReaderEnabled(boolean enabled) {
-        setSystemPaused(!enabled);
-    }
-
-    public boolean isGlobalNotificationsDisabled() {
-        return prefs.getBoolean(KEY_GLOBAL_NOTIFICATIONS_DISABLED, false);
-    }
-
-    public void setGlobalNotificationsDisabled(boolean disabled) {
-        prefs.edit().putBoolean(KEY_GLOBAL_NOTIFICATIONS_DISABLED, disabled).apply();
-    }
-
-    public int getOrientationMode() {
-        return prefs.getInt(KEY_ORIENTATION_MODE, 0);
-    }
-
-    public void setOrientationMode(int mode) {
-        prefs.edit().putInt(KEY_ORIENTATION_MODE, mode).apply();
-    }
-
-    public boolean isHapticEnabled() {
-        return prefs.getBoolean(KEY_HAPTIC_ENABLED, true);
-    }
-
-    public void setHapticEnabled(boolean enabled) {
-        prefs.edit().putBoolean(KEY_HAPTIC_ENABLED, enabled).apply();
+        prefs.edit().putBoolean(KEY_READER_ENABLED, enabled).apply();
     }
 
     public int getSessionSmsCount() {

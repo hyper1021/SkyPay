@@ -2,24 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_power_pause"
-        android:icon="@drawable/ic_power"
-        android:title="Pause/Resume"
-        app:showAsAction="always" />
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh"
+        android:title="Refresh"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/menu_settings"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_clear_history"
         android:icon="@drawable/ic_delete"
         android:title="@string/menu_clear_history"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_help"
-        android:icon="@drawable/ic_help"
-        android:title="Help &amp; Support"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_about"

@@ -11,6 +11,10 @@ public class ThemeHelper {
     public static final int THEME_LIGHT = 1;
     public static final int THEME_DARK = 2;
 
+    public static final int MODE_SYSTEM = 0;
+    public static final int MODE_LIGHT = 1;
+    public static final int MODE_DARK = 2;
+
     public static void applyTheme(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("skypay_prefs", Context.MODE_PRIVATE);
         int mode = prefs.getInt(PREF_THEME, THEME_SYSTEM);
@@ -37,9 +41,17 @@ public class ThemeHelper {
         return prefs.getInt(PREF_THEME, THEME_SYSTEM);
     }
 
+    public static int getThemeMode(Context context) {
+        return getSavedThemeMode(context);
+    }
+
     public static void saveThemeMode(Context context, int mode) {
         SharedPreferences prefs = context.getSharedPreferences("skypay_prefs", Context.MODE_PRIVATE);
         prefs.edit().putInt(PREF_THEME, mode).apply();
         setThemeMode(mode);
+    }
+
+    public static void setTheme(Context context, int mode) {
+        saveThemeMode(context, mode);
     }
 }

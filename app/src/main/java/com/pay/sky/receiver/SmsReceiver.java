@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
-import com.pay.sky.api.SessionManager;
 import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
 import com.pay.sky.util.NotificationHelper;
@@ -40,18 +39,6 @@ public class SmsReceiver extends BroadcastReceiver {
     }
 
     private void processIncomingSms(Context context, Intent intent) {
-        SessionManager.init(context);
-        SessionManager session = SessionManager.getInstance();
-        if (session == null || !session.isLoggedIn()) {
-            return;
-        }
-
-        PreferencesManager.init(context);
-        PreferencesManager prefs = PreferencesManager.getInstance();
-        if (prefs == null || prefs.isSystemPaused()) {
-            return;
-        }
-
         SmsMessage[] messages;
         try {
             messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
@@ -60,6 +47,12 @@ public class SmsReceiver extends BroadcastReceiver {
         }
 
         if (messages == null || messages.length == 0) {
+            return;
+        }
+
+        PreferencesManager.init(context);
+        PreferencesManager prefs = PreferencesManager.getInstance();
+        if (!prefs.isReaderEnabled()) {
             return;
         }
 
@@ -113,7 +106,13 @@ public class SmsReceiver extends BroadcastReceiver {
 
         long threadId = -1;
         try {
-            threadId = Telephony.Threads.getOrCreateThreadId(context, sender);
+            android.net.Uri uri = android.net.Uri.parse("content://mms-sms/threadID");
+            android.net.Uri.Builder builder = uri.buildUpon().appendQueryParameter("recipient", sender);
+            try (android.database.Cursor cursor = context.getContentResolver().query(builder.build(), new String[]{"_id"}, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    threadId = cursor.getLong(0);
+                }
+            }
         } catch (Exception ignored) {
         }
 
@@ -140,11 +139,7 @@ public class SmsReceiver extends BroadcastReceiver {
         }
 
         prefs.incrementSessionSmsCount();
-
-        if (!prefs.isGlobalNotificationsDisabled()) {
-            NotificationHelper.showSmsNotification(context, sms);
-        }
-
+        NotificationHelper.showSmsNotification(context, sms);
         PaymentGatewayDispatcher.dispatch(context, sms);
 
         Intent broadcast = new Intent(ACTION_SMS_RECEIVED_EVENT);

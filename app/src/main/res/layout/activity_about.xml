@@ -30,38 +30,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:gravity="center_horizontal">
+            android:padding="24dp">
 
             <ImageView
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:layout_marginTop="8dp"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginTop="16dp"
                 android:src="@drawable/ic_skypay_logo"
                 android:contentDescription="@string/app_name" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="SkyPay SMS Gateway"
+                android:layout_marginTop="16dp"
+                android:text="@string/app_name"
                 android:textColor="@color/colorTextPrimary"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Version 1.0.0 (Native Android)"
+                android:text="Version 1.0.0 (Production Release)"
                 android:textColor="@color/colorTextSecondary"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="28dp"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
@@ -77,17 +77,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Enterprise Payment Automation"
+                        android:text="Overview"
                         android:textColor="@color/colorTextPrimary"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:lineSpacingMultiplier="1.35"
-                        android:text="SkyPay is a secure, high-performance payment automation platform and native SMS connectivity bridge. It automates financial SMS detection from mobile financial services (bKash, Nagad, Rocket, Upay) and synchronizes verified transaction records directly with merchant servers in real time.\n\nFeaturing an ultra-low power event-driven telephony architecture, SkyPay operates silently in standby with 0% idle battery consumption, waking instantaneously when payment SMS broadcasts arrive."
+                        android:layout_marginTop="8dp"
+                        android:lineSpacingMultiplier="1.3"
+                        android:text="SkyPay is a native, event-driven Android SMS reader and merchant transaction processor. Built for modern payment gateway systems, SkyPay listens for incoming financial SMS events, parses transaction metadata, and immediately persists records into a secure local SQLite database without requiring battery-draining background services."
                         android:textColor="@color/colorTextSecondary"
                         android:textSize="13sp" />
 
@@ -101,25 +101,42 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Server &amp; API Environment"
+                        android:text="Official Gateway Portal"
                         android:textColor="@color/colorTextPrimary"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:id="@+id/tvWebsiteLink"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="API Base URL: https://payv2.skypaybd.top"
+                        android:text="https://skypay.gateway"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@color/colorDivider" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Privacy &amp; Security Standards"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Official Website: https://skypaybd.top"
+                        android:layout_marginTop="6dp"
+                        android:lineSpacingMultiplier="1.3"
+                        android:text="All message data is kept strictly on your local device. Optional webhook forwarding operates only over HTTPS with user-defined bearer credentials. No location, camera, audio, or biometric telemetry is collected."
                         android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp" />
 
@@ -129,56 +146,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="12dp"
-                android:text="Connect &amp; Support"
-                android:textColor="@color/colorTextPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnWebsite"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="Official Website (skypaybd.top)"
-                    android:textColor="@color/colorPrimary"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_globe"
-                    app:iconTint="@color/colorPrimary"
-                    app:strokeColor="@color/colorPrimary" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnTelegram"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="10dp"
-                    android:backgroundTint="#0088CC"
-                    android:text="Contact on Telegram (@BD_Prime_Minister)"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_telegram"
-                    app:iconTint="#FFFFFF" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnWhatsApp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="24dp"
-                    android:backgroundTint="#25D366"
-                    android:text="Contact on WhatsApp (+8801761844968)"
-                    android:textColor="#FFFFFF"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_whatsapp"
-                    app:iconTint="#FFFFFF" />
-
-            </LinearLayout>
+                android:layout_marginTop="24dp"
+                android:text="SkyPay Technologies Inc. • All Rights Reserved"
+                android:textColor="@color/colorTextTertiary"
+                android:textSize="11sp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -23,11 +23,6 @@ public class NotificationHelper {
             return;
         }
 
-        PreferencesManager prefs = PreferencesManager.getInstance();
-        if (prefs != null && prefs.isGlobalNotificationsDisabled()) {
-            return;
-        }
-
         SmsDatabaseHelper.init(context);
         if (SmsDatabaseHelper.getInstance().isSenderMuted(sms.getSender())) {
             return;
@@ -59,7 +54,7 @@ public class NotificationHelper {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
 
-            String title = (sms.getSender() != null && !sms.getSender().trim().isEmpty()) ? sms.getSender().trim() : "New Message";
+            String title = "SkyPay • " + sms.getRecognizedSenderLabel();
             String preview = sms.getBody();
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, SkyPayApp.CHANNEL_ID)
@@ -69,11 +64,11 @@ public class NotificationHelper {
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(preview))
                     .setWhen(sms.getTimestamp())
                     .setShowWhen(true)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
                     .setContentIntent(viewPendingIntent)
-                    .addAction(R.drawable.ic_message, "View", viewPendingIntent)
-                    .addAction(R.drawable.ic_mute, "Mute", mutePendingIntent);
+                    .addAction(R.drawable.ic_message, "View Message", viewPendingIntent)
+                    .addAction(R.drawable.ic_delete, "Mute", mutePendingIntent);
 
             NotificationManagerCompat.from(context).notify(notifId, builder.build());
         } catch (Exception ignored) {

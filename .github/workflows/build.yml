@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -51,7 +51,7 @@ jobs:
           echo "Building in $PROJECT_DIR"
           cd "$PROJECT_DIR"
           chmod +x ./gradlew
-          ./gradlew assembleRelease --stacktrace
+          ./gradlew assembleRelease --stacktrace --no-daemon
           mkdir -p "$GITHUB_WORKSPACE/apk-output"
           find . -name "*.apk" -exec cp {} "$GITHUB_WORKSPACE/apk-output/" \;
           echo "Built APK files:"

@@ -1,16 +1,10 @@
 package com.pay.sky;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.pay.sky.api.SessionManager;
 import com.pay.sky.data.SmsDatabaseHelper;
-import com.pay.sky.util.OrientationHelper;
 import com.pay.sky.util.PreferencesManager;
 
 public class SkyPayApp extends Application {
@@ -23,36 +17,8 @@ public class SkyPayApp extends Application {
         super.onCreate();
         instance = this;
         PreferencesManager.init(this);
-        SessionManager.init(this);
         SmsDatabaseHelper.init(this);
         createNotificationChannel();
-
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-                OrientationHelper.applyOrientation(activity);
-            }
-
-            @Override
-            public void onActivityStarted(@NonNull Activity activity) {}
-
-            @Override
-            public void onActivityResumed(@NonNull Activity activity) {
-                OrientationHelper.applyOrientation(activity);
-            }
-
-            @Override
-            public void onActivityPaused(@NonNull Activity activity) {}
-
-            @Override
-            public void onActivityStopped(@NonNull Activity activity) {}
-
-            @Override
-            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {}
-
-            @Override
-            public void onActivityDestroyed(@NonNull Activity activity) {}
-        });
     }
 
     public static SkyPayApp getInstance() {
