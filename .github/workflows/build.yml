@@ -7,9 +7,6 @@ on:
     branches: [ "main", "master" ]
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,14 +19,16 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android Platform 34 and Build-Tools
+      - name: Setup Android SDK Environment
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" || true
+          if [ -z "$ANDROID_HOME" ]; then
+            if [ -d "/usr/local/lib/android/sdk" ]; then
+              echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+              echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+            fi
+          fi
 
       - name: Configure Keystore
         run: |
@@ -38,7 +37,6 @@ jobs:
           mkdir -p "$PROJECT_DIR/app"
 
           if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "Decoding KEYSTORE_BASE64 secret..."
             echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$PROJECT_DIR/app/skypay-release.keystore" 2>/dev/null || true
             cp "$PROJECT_DIR/app/skypay-release.keystore" "$PROJECT_DIR/skypay-release.keystore" 2>/dev/null || true
           fi
@@ -46,11 +44,9 @@ jobs:
           if [ ! -s "$PROJECT_DIR/app/skypay-release.keystore" ]; then
             FOUND_KS=$(find . -name "skypay-release.keystore" -size +100c | head -n 1)
             if [ -n "$FOUND_KS" ]; then
-              echo "Using repository keystore from $FOUND_KS"
               cp "$FOUND_KS" "$PROJECT_DIR/app/skypay-release.keystore"
               cp "$FOUND_KS" "$PROJECT_DIR/skypay-release.keystore"
             else
-              echo "Generating fallback release keystore..."
               keytool -genkeypair -v -keystore "$PROJECT_DIR/app/skypay-release.keystore" \
                 -alias skypay -keyalg RSA -keysize 2048 -validity 10000 \
                 -storepass skypay123456 -keypass skypay123456 \
@@ -59,14 +55,14 @@ jobs:
             fi
           fi
 
-          echo "KEYSTORE_FILE=$PROJECT_DIR/app/skypay-release.keystore" >> $GITHUB_ENV
-          ls -la "$PROJECT_DIR/app/skypay-release.keystore"
+          ABS_KEYSTORE="$(cd "$PROJECT_DIR/app" && pwd)/skypay-release.keystore"
+          echo "KEYSTORE_FILE=$ABS_KEYSTORE" >> $GITHUB_ENV
 
       - name: Grant execute permission for gradlew
         run: |
           find . -name "gradlew" -exec chmod +x {} \;
 
-      - name: Build Production APK
+      - name: Build APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -79,8 +75,6 @@ jobs:
           ./gradlew assembleRelease --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
           mkdir -p "$GITHUB_WORKSPACE/apk-output"
           find . -name "*.apk" -exec cp {} "$GITHUB_WORKSPACE/apk-output/" \;
-          echo "Built APK files:"
-          ls -la "$GITHUB_WORKSPACE/apk-output"
 
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4

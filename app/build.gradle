@@ -19,20 +19,30 @@ android {
         release {
             def ks = file('skypay-release.keystore')
             if (!ks.exists() || ks.length() == 0) {
-                if (file('../skypay-release.keystore').exists() && file('../skypay-release.keystore').length() > 0) {
-                    ks = file('../skypay-release.keystore')
-                }
+                ks = rootProject.file('skypay-release.keystore')
+            }
+            if (!ks.exists() || ks.length() == 0) {
+                ks = rootProject.file('app/skypay-release.keystore')
             }
             def customKeystore = System.getenv("KEYSTORE_FILE")
-            if (customKeystore && file(customKeystore).exists() && file(customKeystore).length() > 0) {
-                ks = file(customKeystore)
+            if (customKeystore) {
+                def cf = file(customKeystore)
+                if (!cf.exists()) {
+                    cf = rootProject.file(customKeystore)
+                }
+                if (cf.exists() && cf.length() > 0) {
+                    ks = cf
+                }
             }
 
             if (ks != null && ks.exists() && ks.length() > 0) {
                 storeFile ks
-                storePassword(System.getenv("KEYSTORE_PASSWORD") ?: "skypay123456")
-                keyAlias(System.getenv("KEY_ALIAS") ?: "skypay")
-                keyPassword(System.getenv("KEY_PASSWORD") ?: "skypay123456")
+                def sp = System.getenv("KEYSTORE_PASSWORD")
+                storePassword ((sp != null && sp.trim().length() > 0) ? sp.trim() : "skypay123456")
+                def ka = System.getenv("KEY_ALIAS")
+                keyAlias ((ka != null && ka.trim().length() > 0) ? ka.trim() : "skypay")
+                def kp = System.getenv("KEY_PASSWORD")
+                keyPassword ((kp != null && kp.trim().length() > 0) ? kp.trim() : "skypay123456")
             }
         }
     }
@@ -43,8 +53,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             if (signingConfigs.release.storeFile != null && signingConfigs.release.storeFile.exists() && signingConfigs.release.storeFile.length() > 0) {
                 signingConfig signingConfigs.release
-            } else {
-                signingConfig signingConfigs.debug
             }
         }
         debug {
