@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +40,6 @@ import com.pay.sky.R;
 import com.pay.sky.api.SessionManager;
 import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
-import com.pay.sky.receiver.SmsReceiver;
 import com.pay.sky.ui.view.SmsBarChartView;
 import com.pay.sky.util.HapticUtil;
 import com.pay.sky.util.PreferencesManager;
@@ -498,7 +498,9 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
         loadDashboardData();
         checkPermissionsState();
 
-        IntentFilter filter = new IntentFilter(SmsReceiver.ACTION_SMS_SAVED);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.pay.sky.ACTION_SMS_SAVED");
+        filter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(smsUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
