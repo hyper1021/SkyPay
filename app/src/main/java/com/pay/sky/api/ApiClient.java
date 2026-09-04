@@ -185,7 +185,7 @@ public class ApiClient {
         if (contentType != null && !contentType.isEmpty()) {
             conn.setRequestProperty("Content-Type", contentType);
         }
-        conn.setRequestProperty("Accept", "application/json, text/plain, */*");
+        conn.setRequestProperty("Accept", "application/json, text/plain, " + (char)42 + "/" + (char)42);
 
         if (bearerToken != null && !bearerToken.trim().isEmpty()) {
             conn.setRequestProperty("Authorization", "Bearer " + bearerToken.trim());

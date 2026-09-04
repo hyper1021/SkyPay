@@ -21,8 +21,10 @@
             android:paddingBottom="20dp">
 
             <ImageView
-                android:layout_width="68dp"
-                android:layout_height="68dp"
+                android:layout_width="@dimen/login_logo_size"
+                android:layout_height="@dimen/login_logo_size"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_skypay_logo"
                 android:contentDescription="@string/app_name" />
 

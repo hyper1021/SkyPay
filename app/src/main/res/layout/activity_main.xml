@@ -28,8 +28,10 @@
 
                 <ImageView
                     android:id="@+id/ivHeaderLogo"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/header_logo_size"
+                    android:layout_height="@dimen/header_logo_size"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_skypay_logo"
                     android:contentDescription="@string/app_name" />
 

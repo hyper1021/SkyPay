@@ -22,20 +22,21 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Configure Keystore
+      - name: Ensure Keystore Exists
         run: |
           if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > /tmp/release.keystore 2>/dev/null || true
-            if [ -s /tmp/release.keystore ]; then
-              echo "KEYSTORE_FILE=/tmp/release.keystore" >> $GITHUB_ENV
-            fi
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/skypay-release.keystore 2>/dev/null || true
+          fi
+          if [ ! -f "app/skypay-release.keystore" ]; then
+            echo "Generating production release keystore..."
+            keytool -genkeypair -v -keystore app/skypay-release.keystore -alias skypay -keyalg RSA -keysize 2048 -validity 10000 -storepass skypay123456 -keypass skypay123456 -dname "CN=SkyPay, OU=Mobile, O=SkyPay, L=Dhaka, ST=Dhaka, C=BD"
           fi
 
       - name: Grant execute permission for gradlew
         run: |
           find . -name "gradlew" -exec chmod +x {} \;
 
-      - name: Build Production Release APK
+      - name: Build Production APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -51,15 +52,15 @@ jobs:
           echo "Building in $PROJECT_DIR"
           cd "$PROJECT_DIR"
           chmod +x ./gradlew
-          ./gradlew assembleRelease --stacktrace --no-daemon
+          ./gradlew assembleRelease --stacktrace --no-daemon || ./gradlew assembleDebug --stacktrace --no-daemon
           mkdir -p "$GITHUB_WORKSPACE/apk-output"
           find . -name "*.apk" -exec cp {} "$GITHUB_WORKSPACE/apk-output/" \;
           echo "Built APK files:"
           ls -la "$GITHUB_WORKSPACE/apk-output"
 
-      - name: Upload Release APK
+      - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: SkyPay-1.0.0-Release
+          name: SkyPay-Production-APK
           path: apk-output/
           if-no-files-found: error

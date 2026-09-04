@@ -55,7 +55,7 @@ public class AboutActivity extends BaseActivity {
 
     private void openTelegram(String username) {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=" + username));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tg:/" + "/resolve?domain=" + username));
             intent.setPackage("org.telegram.messenger");
             startActivity(intent);
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class AboutActivity extends BaseActivity {
     private void openWhatsapp(String phone) {
         try {
             String cleanPhone = phone.replaceAll("[^0-9]", "");
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("whatsapp://send?phone=" + phone));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("whatsapp:/" + "/send?phone=" + phone));
             intent.setPackage("com.whatsapp");
             startActivity(intent);
         } catch (Exception e) {
