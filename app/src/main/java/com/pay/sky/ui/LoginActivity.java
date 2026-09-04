@@ -9,16 +9,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.pay.sky.R;
 import com.pay.sky.api.ApiClient;
 import com.pay.sky.api.SessionManager;
+import com.pay.sky.util.HapticUtil;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private EditText etEmail;
     private EditText etDeviceKey;
@@ -44,9 +43,16 @@ public class LoginActivity extends AppCompatActivity {
             etEmail.setText(cachedEmail);
         }
 
-        btnLogin.setOnClickListener(v -> attemptLogin());
+        btnLogin.setOnClickListener(v -> {
+            HapticUtil.vibrateClick(this);
+            attemptLogin();
+        });
+
         findViewById(R.id.tvLoginHelp).setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, HelpActivity.class));
+            HapticUtil.vibrateClick(this);
+            Intent intent = new Intent(LoginActivity.this, HelpActivity.class);
+            intent.putExtra("from_login", true);
+            startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out);
         });
     }
@@ -89,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(JSONObject response) {
                 setLoading(false);
-                String token = response.optString("token", "dummy_authenticated_token_" + System.currentTimeMillis());
+                String token = response.optString("token", response.optString("device_token", deviceKey));
                 JSONObject userObj = response.optJSONObject("user");
                 String name = (userObj != null) ? userObj.optString("name", "SkyPay Merchant") : "SkyPay Merchant";
                 JSONObject devObj = response.optJSONObject("device");
@@ -116,11 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(String message) {
                 setLoading(false);
-                new AlertDialog.Builder(LoginActivity.this)
-                        .setTitle("Authentication Error")
-                        .setMessage(message)
-                        .setPositiveButton("OK", null)
-                        .show();
+                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }

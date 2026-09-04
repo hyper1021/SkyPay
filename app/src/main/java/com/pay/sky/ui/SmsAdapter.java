@@ -61,7 +61,7 @@ public class SmsAdapter extends RecyclerView.Adapter<SmsAdapter.SmsViewHolder> {
         }
         holder.tvAvatar.setText(avatar);
 
-        holder.tvTimestamp.setText(sms.getFormattedDate());
+        holder.tvTimestamp.setText(sms.getFriendlyTimestamp());
         holder.tvBody.setText(sms.getBody());
         holder.tvSimBadge.setText(sms.getSimSlotDisplay());
 

@@ -1,37 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:background="@color/colorBackground">
 
-    <ImageView
-        android:id="@+id/ivSplashLogo"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@drawable/ic_skypay_logo"
-        android:contentDescription="@string/app_name" />
-
-    <TextView
-        android:id="@+id/tvSplashTitle"
+    <LinearLayout
+        android:id="@+id/layoutCenterBrand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/app_name"
-        android:textColor="@color/colorTextPrimary"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.04" />
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45">
 
-    <TextView
-        android:id="@+id/tvSplashSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="Payment Gateway SMS Listener"
-        android:textColor="@color/colorTextSecondary"
-        android:textSize="13sp" />
+        <ImageView
+            android:id="@+id/ivSplashLogo"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:src="@drawable/ic_skypay_logo"
+            android:contentDescription="@string/app_name" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvSplashTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/app_name"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02" />
+
+        <TextView
+            android:id="@+id/tvSplashSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Fast, reliable &amp; secure payment connectivity"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="140dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="36dp"
+        android:background="#150284C7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:id="@+id/viewGestureIndicator"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_gesture_bar" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

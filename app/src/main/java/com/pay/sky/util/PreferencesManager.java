@@ -7,10 +7,18 @@ public class PreferencesManager {
 
     private static final String PREF_NAME = "skypay_prefs";
     private static final String KEY_READER_ENABLED = "key_reader_enabled";
+    private static final String KEY_SYSTEM_PAUSED = "key_system_paused";
     private static final String KEY_SESSION_COUNT = "key_session_count";
     private static final String KEY_WEBHOOK_ENABLED = "key_webhook_enabled";
     private static final String KEY_WEBHOOK_URL = "key_webhook_url";
     private static final String KEY_WEBHOOK_SECRET = "key_webhook_secret";
+    private static final String KEY_NOTIFICATIONS_HIDDEN = "key_notifications_hidden";
+    private static final String KEY_HAPTIC_ENABLED = "key_haptic_enabled";
+    private static final String KEY_ORIENTATION_MODE = "key_orientation_mode";
+
+    public static final int ORIENTATION_SYSTEM = 0;
+    public static final int ORIENTATION_PORTRAIT = 1;
+    public static final int ORIENTATION_LANDSCAPE = 2;
 
     private static PreferencesManager instance;
     private final SharedPreferences prefs;
@@ -35,6 +43,14 @@ public class PreferencesManager {
 
     public void setReaderEnabled(boolean enabled) {
         prefs.edit().putBoolean(KEY_READER_ENABLED, enabled).apply();
+    }
+
+    public boolean isPaused() {
+        return prefs.getBoolean(KEY_SYSTEM_PAUSED, false);
+    }
+
+    public void setPaused(boolean paused) {
+        prefs.edit().putBoolean(KEY_SYSTEM_PAUSED, paused).apply();
     }
 
     public int getSessionSmsCount() {
@@ -73,5 +89,29 @@ public class PreferencesManager {
 
     public void setWebhookSecret(String secret) {
         prefs.edit().putString(KEY_WEBHOOK_SECRET, secret).apply();
+    }
+
+    public boolean isNotificationsHidden() {
+        return prefs.getBoolean(KEY_NOTIFICATIONS_HIDDEN, false);
+    }
+
+    public void setNotificationsHidden(boolean hidden) {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS_HIDDEN, hidden).apply();
+    }
+
+    public boolean isHapticEnabled() {
+        return prefs.getBoolean(KEY_HAPTIC_ENABLED, true);
+    }
+
+    public void setHapticEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_HAPTIC_ENABLED, enabled).apply();
+    }
+
+    public int getOrientationMode() {
+        return prefs.getInt(KEY_ORIENTATION_MODE, ORIENTATION_SYSTEM);
+    }
+
+    public void setOrientationMode(int mode) {
+        prefs.edit().putInt(KEY_ORIENTATION_MODE, mode).apply();
     }
 }

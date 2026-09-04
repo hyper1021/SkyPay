@@ -15,36 +15,39 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="24dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <ImageView
-                android:layout_width="88dp"
-                android:layout_height="88dp"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
                 android:src="@drawable/ic_skypay_logo"
                 android:contentDescription="@string/app_name" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:text="SkyPay Gateway"
                 android:textColor="@color/colorTextPrimary"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="3dp"
                 android:text="Device Authentication &amp; Listener"
                 android:textColor="@color/colorTextSecondary"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                app:cardCornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
                 app:strokeColor="@color/colorCardBorder"
@@ -54,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="22dp">
+                    android:padding="18dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -67,13 +70,13 @@
                     <EditText
                         android:id="@+id/etLoginEmail"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
                         android:background="@drawable/bg_search_field"
                         android:hint="merchant@domain.com"
                         android:inputType="textEmailAddress"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
                         android:textColor="@color/colorTextPrimary"
                         android:textColorHint="@color/colorTextTertiary"
                         android:textSize="14sp"
@@ -82,7 +85,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="14dp"
                         android:text="Device Authorization Key"
                         android:textColor="@color/colorTextPrimary"
                         android:textSize="13sp"
@@ -91,13 +94,13 @@
                     <EditText
                         android:id="@+id/etLoginDeviceKey"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="6dp"
                         android:background="@drawable/bg_search_field"
                         android:hint="Enter registered device key"
                         android:inputType="textPassword"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
                         android:textColor="@color/colorTextPrimary"
                         android:textColorHint="@color/colorTextTertiary"
                         android:textSize="14sp"
@@ -106,7 +109,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="12dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
@@ -122,8 +125,8 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="16dp">
+                        android:layout_height="48dp"
+                        android:layout_marginTop="14dp">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnLogin"
@@ -131,15 +134,15 @@
                             android:layout_height="match_parent"
                             android:text="Sign In"
                             android:textColor="#FFFFFF"
-                            android:textSize="15sp"
+                            android:textSize="14sp"
                             android:textStyle="bold"
-                            app:cornerRadius="12dp"
+                            app:cornerRadius="10dp"
                             app:backgroundTint="@color/colorPrimary" />
 
                         <ProgressBar
                             android:id="@+id/pbLoginLoading"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:indeterminate="true"
                             android:indeterminateTint="#FFFFFF"
@@ -153,7 +156,7 @@
                 android:id="@+id/tvLoginHelp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:padding="8dp"
                 android:text="How does device authentication work? Need Help"
                 android:textColor="@color/colorPrimary"

@@ -15,7 +15,7 @@ import java.util.Locale;
 public class SmsDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "skypay_sms.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String TABLE_SMS = "received_sms";
     public static final String COLUMN_ID = "_id";
@@ -43,6 +43,21 @@ public class SmsDatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_SETTINGS = "app_settings";
     public static final String COLUMN_SETTING_KEY = "setting_key";
     public static final String COLUMN_SETTING_VAL = "setting_value";
+
+    public static final String TABLE_QUEUE = "queued_messages";
+    public static final String COLUMN_Q_ID = "_id";
+    public static final String COLUMN_Q_SMS_ID = "sms_id";
+    public static final String COLUMN_Q_SENDER = "sender";
+    public static final String COLUMN_Q_BODY = "body";
+    public static final String COLUMN_Q_TIMESTAMP = "timestamp";
+    public static final String COLUMN_Q_SIM_SLOT = "sim_slot";
+    public static final String COLUMN_Q_SUB_ID = "sub_id";
+    public static final String COLUMN_Q_ATTEMPTS = "attempts";
+    public static final String COLUMN_Q_LAST_ATTEMPT = "last_attempt";
+    public static final String COLUMN_Q_ERROR_REASON = "error_reason";
+    public static final String COLUMN_Q_CREATED_AT = "created_at";
+
+    public static final String TABLE_PAYLOAD_CONFIG = "payload_config";
 
     private static SmsDatabaseHelper instance;
 
@@ -115,6 +130,45 @@ public class SmsDatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_SETTING_KEY + " TEXT PRIMARY KEY, "
                 + COLUMN_SETTING_VAL + " TEXT);";
         db.execSQL(createSettingsTable);
+
+        createQueueTable(db);
+        createPayloadConfigTable(db);
+    }
+
+    private void createQueueTable(SQLiteDatabase db) {
+        String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_QUEUE + " ("
+                + COLUMN_Q_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_Q_SMS_ID + " TEXT, "
+                + COLUMN_Q_SENDER + " TEXT, "
+                + COLUMN_Q_BODY + " TEXT, "
+                + COLUMN_Q_TIMESTAMP + " INTEGER, "
+                + COLUMN_Q_SIM_SLOT + " INTEGER, "
+                + COLUMN_Q_SUB_ID + " INTEGER, "
+                + COLUMN_Q_ATTEMPTS + " INTEGER DEFAULT 0, "
+                + COLUMN_Q_LAST_ATTEMPT + " INTEGER DEFAULT 0, "
+                + COLUMN_Q_ERROR_REASON + " TEXT, "
+                + COLUMN_Q_CREATED_AT + " INTEGER);";
+        db.execSQL(sql);
+    }
+
+    private void createPayloadConfigTable(SQLiteDatabase db) {
+        String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_PAYLOAD_CONFIG + " ("
+                + "id INTEGER PRIMARY KEY, "
+                + "http_method TEXT DEFAULT 'POST', "
+                + "content_type TEXT DEFAULT 'application/json', "
+                + "include_sender INTEGER DEFAULT 1, "
+                + "include_body INTEGER DEFAULT 1, "
+                + "include_timestamp INTEGER DEFAULT 1, "
+                + "include_sim_slot INTEGER DEFAULT 1, "
+                + "include_device_id INTEGER DEFAULT 1, "
+                + "key_sender TEXT DEFAULT 'sender', "
+                + "key_body TEXT DEFAULT 'body', "
+                + "key_timestamp TEXT DEFAULT 'received_at', "
+                + "key_sim_slot TEXT DEFAULT 'sim_slot', "
+                + "key_device_id TEXT DEFAULT 'device_id', "
+                + "custom_headers TEXT DEFAULT '', "
+                + "custom_fields TEXT DEFAULT '');";
+        db.execSQL(sql);
     }
 
     @Override
@@ -135,6 +189,10 @@ public class SmsDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SETTINGS + " ("
                     + COLUMN_SETTING_KEY + " TEXT PRIMARY KEY, "
                     + COLUMN_SETTING_VAL + " TEXT);");
+        }
+        if (oldVersion < 3) {
+            createQueueTable(db);
+            createPayloadConfigTable(db);
         }
     }
 
@@ -359,6 +417,7 @@ public class SmsDatabaseHelper extends SQLiteOpenHelper {
     public synchronized void clearAll() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_SMS, null, null);
+        db.delete(TABLE_QUEUE, null, null);
     }
 
     public synchronized boolean isSenderMuted(String sender) {
@@ -411,6 +470,135 @@ public class SmsDatabaseHelper extends SQLiteOpenHelper {
             if (cursor != null) cursor.close();
         }
         return list;
+    }
+
+    public synchronized long insertQueuedMessage(QueuedMessage qm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_Q_SMS_ID, qm.getSmsId());
+        cv.put(COLUMN_Q_SENDER, qm.getSender());
+        cv.put(COLUMN_Q_BODY, qm.getBody());
+        cv.put(COLUMN_Q_TIMESTAMP, qm.getTimestamp());
+        cv.put(COLUMN_Q_SIM_SLOT, qm.getSimSlot());
+        cv.put(COLUMN_Q_SUB_ID, qm.getSubId());
+        cv.put(COLUMN_Q_ATTEMPTS, qm.getAttempts());
+        cv.put(COLUMN_Q_LAST_ATTEMPT, qm.getLastAttempt());
+        cv.put(COLUMN_Q_ERROR_REASON, qm.getErrorReason());
+        cv.put(COLUMN_Q_CREATED_AT, qm.getCreatedAt());
+        long id = db.insert(TABLE_QUEUE, null, cv);
+        qm.setId(id);
+        return id;
+    }
+
+    public synchronized List<QueuedMessage> getQueuedMessages() {
+        List<QueuedMessage> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_QUEUE, null, null, null, null, null, COLUMN_Q_CREATED_AT + " DESC");
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    QueuedMessage qm = new QueuedMessage();
+                    qm.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_Q_ID)));
+                    qm.setSmsId(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_Q_SMS_ID)));
+                    qm.setSender(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_Q_SENDER)));
+                    qm.setBody(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_Q_BODY)));
+                    qm.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_Q_TIMESTAMP)));
+                    qm.setSimSlot(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_Q_SIM_SLOT)));
+                    qm.setSubId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_Q_SUB_ID)));
+                    qm.setAttempts(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_Q_ATTEMPTS)));
+                    qm.setLastAttempt(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_Q_LAST_ATTEMPT)));
+                    qm.setErrorReason(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_Q_ERROR_REASON)));
+                    qm.setCreatedAt(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_Q_CREATED_AT)));
+                    list.add(qm);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) cursor.close();
+        }
+        return list;
+    }
+
+    public synchronized void deleteQueuedMessage(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_QUEUE, COLUMN_Q_ID + "=?", new String[]{String.valueOf(id)});
+    }
+
+    public synchronized void clearQueuedMessages() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_QUEUE, null, null);
+    }
+
+    public synchronized void updateQueuedMessageAttempt(long id, int attempts, String errorReason) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_Q_ATTEMPTS, attempts);
+        cv.put(COLUMN_Q_LAST_ATTEMPT, System.currentTimeMillis());
+        cv.put(COLUMN_Q_ERROR_REASON, errorReason);
+        db.update(TABLE_QUEUE, cv, COLUMN_Q_ID + "=?", new String[]{String.valueOf(id)});
+    }
+
+    public synchronized int getQueuedMessageCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_QUEUE, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            }
+        } finally {
+            if (cursor != null) cursor.close();
+        }
+        return 0;
+    }
+
+    public synchronized void saveDataPayloadConfig(DataPayloadConfig cfg) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", 1);
+        cv.put("http_method", cfg.getHttpMethod());
+        cv.put("content_type", cfg.getContentType());
+        cv.put("include_sender", cfg.isIncludeSender() ? 1 : 0);
+        cv.put("include_body", cfg.isIncludeBody() ? 1 : 0);
+        cv.put("include_timestamp", cfg.isIncludeTimestamp() ? 1 : 0);
+        cv.put("include_sim_slot", cfg.isIncludeSimSlot() ? 1 : 0);
+        cv.put("include_device_id", cfg.isIncludeDeviceId() ? 1 : 0);
+        cv.put("key_sender", cfg.getKeySender());
+        cv.put("key_body", cfg.getKeyBody());
+        cv.put("key_timestamp", cfg.getKeyTimestamp());
+        cv.put("key_sim_slot", cfg.getKeySimSlot());
+        cv.put("key_device_id", cfg.getKeyDeviceId());
+        cv.put("custom_headers", cfg.getCustomHeaders());
+        cv.put("custom_fields", cfg.getCustomFields());
+        db.insertWithOnConflict(TABLE_PAYLOAD_CONFIG, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public synchronized DataPayloadConfig getDataPayloadConfig() {
+        DataPayloadConfig cfg = new DataPayloadConfig();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_PAYLOAD_CONFIG, null, "id=1", null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                cfg.setHttpMethod(cursor.getString(cursor.getColumnIndexOrThrow("http_method")));
+                cfg.setContentType(cursor.getString(cursor.getColumnIndexOrThrow("content_type")));
+                cfg.setIncludeSender(cursor.getInt(cursor.getColumnIndexOrThrow("include_sender")) == 1);
+                cfg.setIncludeBody(cursor.getInt(cursor.getColumnIndexOrThrow("include_body")) == 1);
+                cfg.setIncludeTimestamp(cursor.getInt(cursor.getColumnIndexOrThrow("include_timestamp")) == 1);
+                cfg.setIncludeSimSlot(cursor.getInt(cursor.getColumnIndexOrThrow("include_sim_slot")) == 1);
+                cfg.setIncludeDeviceId(cursor.getInt(cursor.getColumnIndexOrThrow("include_device_id")) == 1);
+                cfg.setKeySender(cursor.getString(cursor.getColumnIndexOrThrow("key_sender")));
+                cfg.setKeyBody(cursor.getString(cursor.getColumnIndexOrThrow("key_body")));
+                cfg.setKeyTimestamp(cursor.getString(cursor.getColumnIndexOrThrow("key_timestamp")));
+                cfg.setKeySimSlot(cursor.getString(cursor.getColumnIndexOrThrow("key_sim_slot")));
+                cfg.setKeyDeviceId(cursor.getString(cursor.getColumnIndexOrThrow("key_device_id")));
+                cfg.setCustomHeaders(cursor.getString(cursor.getColumnIndexOrThrow("custom_headers")));
+                cfg.setCustomFields(cursor.getString(cursor.getColumnIndexOrThrow("custom_fields")));
+            }
+        } finally {
+            if (cursor != null) cursor.close();
+        }
+        return cfg;
     }
 
     private SmsModel cursorToModel(Cursor cursor) {

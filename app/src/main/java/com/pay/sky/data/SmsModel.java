@@ -1,8 +1,10 @@
 package com.pay.sky.data;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class SmsModel {
 
@@ -164,6 +166,48 @@ public class SmsModel {
     public String getFormattedDate() {
         long timeToFormat = timestamp > 0 ? timestamp : createdAt;
         SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy, h:mm:ss a", Locale.ENGLISH);
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+        return sdf.format(new Date(timeToFormat));
+    }
+
+    public String getFriendlyTimestamp() {
+        long timeToFormat = timestamp > 0 ? timestamp : createdAt;
+        long now = System.currentTimeMillis();
+        long diff = now - timeToFormat;
+
+        if (diff < 0) {
+            return "Just now";
+        }
+        if (diff < 60000) {
+            return "Just now";
+        }
+        if (diff < 3600000) {
+            long mins = diff / 60000;
+            return mins + (mins == 1 ? " min ago" : " mins ago");
+        }
+        if (diff < 86400000) {
+            long hrs = diff / 3600000;
+            return hrs + (hrs == 1 ? " hour ago" : " hours ago");
+        }
+
+        Calendar msgCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Dhaka"));
+        msgCal.setTimeInMillis(timeToFormat);
+        Calendar nowCal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Dhaka"));
+
+        if (nowCal.get(Calendar.YEAR) == msgCal.get(Calendar.YEAR) &&
+                nowCal.get(Calendar.DAY_OF_YEAR) - msgCal.get(Calendar.DAY_OF_YEAR) == 1) {
+            SimpleDateFormat timeFmt = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
+            timeFmt.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
+            return "Yesterday " + timeFmt.format(new Date(timeToFormat));
+        }
+
+        SimpleDateFormat sdf;
+        if (nowCal.get(Calendar.YEAR) == msgCal.get(Calendar.YEAR)) {
+            sdf = new SimpleDateFormat("MMM d, h:mm a", Locale.ENGLISH);
+        } else {
+            sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+        }
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Dhaka"));
         return sdf.format(new Date(timeToFormat));
     }
 

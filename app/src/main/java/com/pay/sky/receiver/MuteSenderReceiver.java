@@ -25,7 +25,7 @@ public class MuteSenderReceiver extends BroadcastReceiver {
         if (sender != null && !sender.trim().isEmpty()) {
             SmsDatabaseHelper.init(context);
             SmsDatabaseHelper.getInstance().muteSender(sender);
-            Toast.makeText(context, "Muted future notifications from " + sender, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Muted", Toast.LENGTH_SHORT).show();
         }
 
         if (notifId >= 0) {

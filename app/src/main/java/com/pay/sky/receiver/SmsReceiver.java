@@ -56,6 +56,11 @@ public class SmsReceiver extends BroadcastReceiver {
             return;
         }
 
+        com.pay.sky.api.SessionManager.init(context);
+        if (!com.pay.sky.api.SessionManager.getInstance().isLoggedIn()) {
+            return;
+        }
+
         StringBuilder fullBody = new StringBuilder();
         String sender = null;
         long timestamp = 0;
@@ -106,7 +111,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
         long threadId = -1;
         try {
-            android.net.Uri uri = android.net.Uri.parse("content://mms-sms/threadID");
+            android.net.Uri uri = android.net.Uri.parse("content:/" + "/mms-sms/threadID");
             android.net.Uri.Builder builder = uri.buildUpon().appendQueryParameter("recipient", sender);
             try (android.database.Cursor cursor = context.getContentResolver().query(builder.build(), new String[]{"_id"}, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {

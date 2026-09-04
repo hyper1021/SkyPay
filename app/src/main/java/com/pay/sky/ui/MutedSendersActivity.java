@@ -20,7 +20,7 @@ import com.pay.sky.data.SmsDatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MutedSendersActivity extends AppCompatActivity {
+public class MutedSendersActivity extends BaseActivity {
 
     private EditText etSearch;
     private LinearLayout layoutEmpty;

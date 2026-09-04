@@ -13,7 +13,7 @@ import com.pay.sky.api.ApiClient;
 import com.pay.sky.util.PreferencesManager;
 import org.json.JSONObject;
 
-public class WebhookSettingsActivity extends AppCompatActivity {
+public class WebhookSettingsActivity extends BaseActivity {
 
     private SwitchMaterial switchActive;
     private EditText etUrl;

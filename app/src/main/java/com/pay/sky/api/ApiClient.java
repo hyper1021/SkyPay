@@ -1,15 +1,22 @@
 package com.pay.sky.api;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import com.pay.sky.data.SmsModel;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.net.ssl.HttpsURLConnection;
@@ -24,35 +31,107 @@ public class ApiClient {
         void onError(String message);
     }
 
+    public interface PingCallback {
+        void onResult(boolean ok, String description, boolean logout);
+    }
+
     public static void login(String email, String deviceKey, ApiCallback callback) {
         EXECUTOR.execute(() -> {
             try {
                 JSONObject requestJson = new JSONObject();
                 requestJson.put("email", email);
                 requestJson.put("device_key", deviceKey);
+                requestJson.put("device_token", deviceKey);
                 requestJson.put("app_version", "1.0.0");
                 requestJson.put("platform", "android");
+                requestJson.put("android_version", Build.VERSION.RELEASE);
+                requestJson.put("sdk_int", Build.VERSION.SDK_INT);
+                requestJson.put("model", Build.MODEL);
+                requestJson.put("manufacturer", Build.MANUFACTURER);
 
                 String endpoint = ApiConfig.DEFAULT_BASE_URL + ApiConfig.LOGIN_ENDPOINT;
                 String responseStr = executePost(endpoint, null, requestJson.toString());
 
                 JSONObject responseJson = new JSONObject(responseStr);
-                boolean success = responseJson.optBoolean("success", true);
-                if (success) {
+                boolean success = responseJson.optBoolean("success", responseJson.optBoolean("status", false));
+                if (success || responseJson.has("token")) {
                     MAIN_HANDLER.post(() -> callback.onSuccess(responseJson));
                 } else {
-                    String msg = responseJson.optString("message", "Authentication failed");
+                    String msg = responseJson.optString("message", "Invalid email or password.");
                     MAIN_HANDLER.post(() -> callback.onError(msg));
                 }
+            } catch (SocketTimeoutException e) {
+                MAIN_HANDLER.post(() -> callback.onError("Connection timed out. Please try again."));
+            } catch (UnknownHostException | ConnectException e) {
+                MAIN_HANDLER.post(() -> callback.onError("No internet connection. Please verify your network."));
             } catch (Exception e) {
-                String errorMsg = "Unable to connect to server. Please verify your connection.";
-                MAIN_HANDLER.post(() -> callback.onError(errorMsg));
+                String msg = e.getMessage() != null ? e.getMessage() : "";
+                if (msg.contains("401") || msg.contains("403")) {
+                    MAIN_HANDLER.post(() -> callback.onError("Invalid email or device authorization key."));
+                } else if (msg.contains("500") || msg.contains("502") || msg.contains("503")) {
+                    MAIN_HANDLER.post(() -> callback.onError("Server error. Please try again later."));
+                } else {
+                    MAIN_HANDLER.post(() -> callback.onError("Authentication failed. Please check your credentials."));
+                }
             }
         });
     }
 
-    public static void testWebhook(String webhookUrl, ApiCallback callback) {
-        testWebhook(webhookUrl, "", callback);
+    public static void pingDevice(String token, String deviceId, String email, PingCallback callback) {
+        EXECUTOR.execute(() -> {
+            try {
+                JSONObject requestJson = new JSONObject();
+                requestJson.put("token", token);
+                requestJson.put("device_token", token);
+                requestJson.put("device_id", deviceId);
+                requestJson.put("email", email);
+                requestJson.put("app_version", "1.0.0");
+                requestJson.put("android_version", Build.VERSION.RELEASE);
+                requestJson.put("sdk_int", Build.VERSION.SDK_INT);
+                requestJson.put("model", Build.MODEL);
+                requestJson.put("manufacturer", Build.MANUFACTURER);
+
+                String endpoint = ApiConfig.DEFAULT_BASE_URL + ApiConfig.PING_ENDPOINT;
+                String responseStr = executePost(endpoint, token, requestJson.toString());
+
+                JSONObject resJson = new JSONObject(responseStr);
+                boolean ok = resJson.optBoolean("ok", resJson.optBoolean("success", true));
+                String desc = resJson.optString("description", resJson.optString("message", ""));
+                boolean logout = resJson.optBoolean("logout", false);
+
+                MAIN_HANDLER.post(() -> callback.onResult(ok, desc, logout));
+            } catch (Exception e) {
+                MAIN_HANDLER.post(() -> callback.onResult(true, "", false));
+            }
+        });
+    }
+
+    public static String forwardSmsToMainServer(Context context, SmsModel sms) throws Exception {
+        SessionManager session = SessionManager.getInstance();
+        if (!session.isLoggedIn()) {
+            throw new Exception("User not logged in");
+        }
+
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("device_token", session.getToken());
+        requestJson.put("device_id", session.getDeviceId());
+        requestJson.put("email", session.getUserEmail());
+        requestJson.put("sms_id", sms.getSmsId() != null ? sms.getSmsId() : String.valueOf(sms.getId()));
+        requestJson.put("sender", sms.getSender());
+        requestJson.put("body", sms.getBody());
+        requestJson.put("timestamp", sms.getTimestamp());
+        requestJson.put("sim_slot", sms.getSimSlot());
+        requestJson.put("sub_id", sms.getSubId());
+        requestJson.put("service_center", sms.getServiceCenter());
+        requestJson.put("sms_type", sms.getSmsType());
+        requestJson.put("app_version", "1.0.0");
+        requestJson.put("android_version", Build.VERSION.RELEASE);
+        requestJson.put("sdk_int", Build.VERSION.SDK_INT);
+        requestJson.put("model", Build.MODEL);
+        requestJson.put("manufacturer", Build.MANUFACTURER);
+
+        String endpoint = ApiConfig.DEFAULT_BASE_URL + ApiConfig.SMS_DATA_ENDPOINT;
+        return executePost(endpoint, session.getToken(), requestJson.toString());
     }
 
     public static void testWebhook(String webhookUrl, String secret, ApiCallback callback) {
@@ -87,6 +166,10 @@ public class ApiClient {
     }
 
     public static String executePost(String urlString, String bearerToken, String jsonBody) throws Exception {
+        return executeHttpRequest(urlString, "POST", "application/json; charset=UTF-8", bearerToken, null, jsonBody);
+    }
+
+    public static String executeHttpRequest(String urlString, String method, String contentType, String bearerToken, Map<String, String> customHeaders, String body) throws Exception {
         URL url = new URL(urlString);
         HttpURLConnection conn;
         if (urlString.startsWith("https://")) {
@@ -95,21 +178,33 @@ public class ApiClient {
             conn = (HttpURLConnection) url.openConnection();
         }
 
-        conn.setRequestMethod("POST");
+        conn.setRequestMethod(method != null ? method.toUpperCase() : "POST");
         conn.setConnectTimeout(ApiConfig.CONNECT_TIMEOUT_MS);
         conn.setReadTimeout(ApiConfig.READ_TIMEOUT_MS);
-        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setDoOutput(true);
+
+        if (contentType != null && !contentType.isEmpty()) {
+            conn.setRequestProperty("Content-Type", contentType);
+        }
+        conn.setRequestProperty("Accept", "application/json, text/plain, */*");
 
         if (bearerToken != null && !bearerToken.trim().isEmpty()) {
             conn.setRequestProperty("Authorization", "Bearer " + bearerToken.trim());
         }
 
-        byte[] outputBytes = jsonBody.getBytes(StandardCharsets.UTF_8);
-        try (OutputStream os = conn.getOutputStream()) {
-            os.write(outputBytes);
-            os.flush();
+        if (customHeaders != null) {
+            for (Map.Entry<String, String> entry : customHeaders.entrySet()) {
+                conn.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
+
+        boolean hasBody = !"GET".equalsIgnoreCase(method) && body != null;
+        if (hasBody) {
+            conn.setDoOutput(true);
+            byte[] outputBytes = body.getBytes(StandardCharsets.UTF_8);
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(outputBytes);
+                os.flush();
+            }
         }
 
         int statusCode = conn.getResponseCode();
@@ -131,7 +226,7 @@ public class ApiClient {
             String res = sb.toString().trim();
             return res.isEmpty() ? "{\"success\":true}" : res;
         } else {
-            throw new Exception("Server returned HTTP " + statusCode);
+            throw new Exception("Server returned HTTP " + statusCode + (sb.length() > 0 ? ": " + sb.toString() : ""));
         }
     }
 }
