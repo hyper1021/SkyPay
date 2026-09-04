@@ -1,6 +1,5 @@
 package com.pay.sky.ui;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +36,15 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.QueueViewHol
     @Override
     public void onBindViewHolder(@NonNull QueueViewHolder holder, int position) {
         QueuedMessage qm = list.get(position);
-        holder.tvSender.setText(qm.getSender() != null ? qm.getSender() : "Unknown");
+        holder.tvSender.setText(qm.getSender() != null && !qm.getSender().trim().isEmpty() ? qm.getSender().trim() : "Unknown");
+
+        int slot = qm.getSimSlot();
+        String simText = slot >= 0 ? ("SIM " + (slot + 1)) : "SIM 1";
+        holder.tvSimBadge.setText(simText);
+
         holder.tvAttempts.setText("Retry #" + qm.getAttempts());
         holder.tvBody.setText(qm.getBody());
-        holder.tvReason.setText("Error: " + qm.getErrorReason());
+        holder.tvReason.setText("Error: " + (qm.getErrorReason() != null ? qm.getErrorReason() : "Failed"));
 
         long time = qm.getCreatedAt();
         long diff = System.currentTimeMillis() - time;
@@ -61,6 +65,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.QueueViewHol
 
     static class QueueViewHolder extends RecyclerView.ViewHolder {
         TextView tvSender;
+        TextView tvSimBadge;
         TextView tvAttempts;
         TextView tvBody;
         TextView tvReason;
@@ -69,6 +74,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.QueueViewHol
         public QueueViewHolder(@NonNull View itemView) {
             super(itemView);
             tvSender = itemView.findViewById(R.id.tvQueueSender);
+            tvSimBadge = itemView.findViewById(R.id.tvQueueSimBadge);
             tvAttempts = itemView.findViewById(R.id.tvQueueAttempts);
             tvBody = itemView.findViewById(R.id.tvQueueBody);
             tvReason = itemView.findViewById(R.id.tvQueueReason);

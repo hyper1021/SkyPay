@@ -3,7 +3,6 @@ package com.pay.sky.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import com.pay.sky.R;
 import com.pay.sky.api.ApiConfig;
@@ -25,9 +24,6 @@ public class AboutActivity extends BaseActivity {
             HapticUtil.vibrateClick(this);
             finish();
         });
-
-        TextView tvApiBaseUrl = findViewById(R.id.tvApiBaseUrl);
-        tvApiBaseUrl.setText(ApiConfig.DEFAULT_BASE_URL);
 
         findViewById(R.id.btnWebsite).setOnClickListener(v -> {
             HapticUtil.vibrateClick(this);
@@ -55,7 +51,7 @@ public class AboutActivity extends BaseActivity {
 
     private void openTelegram(String username) {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tg:/" + "/resolve?domain=" + username));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tg://" + "resolve?domain=" + username));
             intent.setPackage("org.telegram.messenger");
             startActivity(intent);
         } catch (Exception e) {

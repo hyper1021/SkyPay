@@ -71,7 +71,7 @@ jobs:
           PROJECT_DIR=$(dirname "$SETTINGS_FILE")
           cd "$PROJECT_DIR"
           chmod +x ./gradlew
-          ./gradlew assemble --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew clean assembleRelease --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
           mkdir -p "$GITHUB_WORKSPACE/apk-output"
           find . -name "*.apk" -exec cp {} "$GITHUB_WORKSPACE/apk-output/" \;
           echo "Built APK files:"

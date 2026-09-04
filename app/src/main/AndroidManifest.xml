@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pay.sky">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -88,6 +87,14 @@
 
         <activity
             android:name=".ui.DataPayloadActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PostBodyActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.HeadersActivity"
             android:exported="false" />
 
         <activity

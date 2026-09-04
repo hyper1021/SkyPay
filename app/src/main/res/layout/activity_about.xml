@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Version 1.0.0 (Production Release)"
+                android:text="Version 1.0.0"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="12sp" />
 
@@ -125,7 +125,9 @@
                             app:strokeColor="@color/colorPrimary"
                             app:cornerRadius="10dp"
                             app:icon="@drawable/ic_globe"
-                            app:iconTint="@color/colorPrimary" />
+                            app:iconTint="@color/colorPrimary"
+                            app:iconGravity="textStart"
+                            app:iconPadding="6dp" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnTelegram"
@@ -133,54 +135,33 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:layout_marginBottom="8dp"
-                            android:text="Contact on Telegram (@BD_Prime_Minister)"
+                            android:text="Contact on Telegram"
                             android:textColor="#0284C7"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:strokeColor="#0284C7"
                             app:cornerRadius="10dp"
                             app:icon="@drawable/ic_telegram"
-                            app:iconTint="#0284C7" />
+                            app:iconTint="#0284C7"
+                            app:iconGravity="textStart"
+                            app:iconPadding="6dp" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnWhatsapp"
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:text="Contact on WhatsApp (+8801761844968)"
+                            android:text="Contact on WhatsApp"
                             android:textColor="#10B981"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:strokeColor="#10B981"
                             app:cornerRadius="10dp"
                             app:icon="@drawable/ic_whatsapp"
-                            app:iconTint="#10B981" />
+                            app:iconTint="#10B981"
+                            app:iconGravity="textStart"
+                            app:iconPadding="6dp" />
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:background="@color/colorDivider" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Server API Endpoint"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvApiBaseUrl"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="https://payv2.skypaybd.top"
-                        android:textColor="@color/colorTextSecondary"
-                        android:textSize="12sp"
-                        android:textIsSelectable="true" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

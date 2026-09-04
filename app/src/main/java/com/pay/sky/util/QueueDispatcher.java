@@ -3,12 +3,10 @@ package com.pay.sky.util;
 import android.content.Context;
 import com.pay.sky.api.ApiClient;
 import com.pay.sky.api.SessionManager;
-import com.pay.sky.data.DataPayloadConfig;
+import com.pay.sky.data.KeyValuePair;
 import com.pay.sky.data.QueuedMessage;
 import com.pay.sky.data.SmsDatabaseHelper;
-import org.json.JSONObject;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import com.pay.sky.data.SmsModel;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -59,20 +57,44 @@ public class QueueDispatcher {
             try {
                 SmsDatabaseHelper db = SmsDatabaseHelper.getInstance();
                 List<QueuedMessage> list = db.getQueuedMessages();
-                DataPayloadConfig config = db.getDataPayloadConfig();
                 String token = prefs.getWebhookSecret();
+                String method = prefs.getHttpMethod();
+                String contentType = prefs.getPayloadContentType();
+                String deviceId = SessionManager.getInstance().getDeviceId();
+                List<KeyValuePair> headerRows = prefs.getHeaderRows();
+                List<KeyValuePair> bodyRows = prefs.getPostBodyRows();
 
                 for (QueuedMessage qm : list) {
                     if (prefs.isPaused()) {
                         break;
                     }
                     try {
-                        String payload = buildPayload(qm, config);
-                        Map<String, String> headers = config.parseCustomHeaders();
-                        String contentType = "application/x-www-form-urlencoded".equalsIgnoreCase(config.getContentType())
+                        SmsModel sms = new SmsModel();
+                        sms.setId(qm.getId());
+                        sms.setSmsId(qm.getSmsId());
+                        sms.setSender(qm.getSender());
+                        sms.setBody(qm.getBody());
+                        sms.setTimestamp(qm.getTimestamp());
+                        sms.setSimSlot(qm.getSimSlot());
+                        sms.setSubId(qm.getSubId());
+
+                        Map<String, String> headers = PayloadBuilder.buildHeaders(headerRows, sms, contentType, token, deviceId);
+                        String payload = PayloadBuilder.buildPayload(bodyRows, contentType, sms, token, deviceId);
+
+                        String requestUrl = webhookUrl;
+                        String requestBody = payload;
+                        if ("GET".equalsIgnoreCase(method)) {
+                            String queryString = PayloadBuilder.buildQueryString(bodyRows, sms, contentType, token, deviceId);
+                            if (queryString != null && !queryString.isEmpty()) {
+                                requestUrl += (requestUrl.contains("?") ? "&" : "?") + queryString;
+                            }
+                            requestBody = null;
+                        }
+
+                        String contentTypeHeader = PayloadBuilder.isFormUrlEncoded(contentType)
                                 ? "application/x-www-form-urlencoded" : "application/json; charset=UTF-8";
 
-                        ApiClient.executeHttpRequest(webhookUrl, config.getHttpMethod(), contentType, token, headers, payload);
+                        ApiClient.executeHttpRequest(requestUrl, method, contentTypeHeader, token, headers, requestBody);
                         db.deleteQueuedMessage(qm.getId());
                         success++;
                     } catch (Exception e) {
@@ -89,62 +111,5 @@ public class QueueDispatcher {
                 }
             }
         });
-    }
-
-    private static String buildPayload(QueuedMessage qm, DataPayloadConfig config) throws Exception {
-        if ("application/x-www-form-urlencoded".equalsIgnoreCase(config.getContentType())) {
-            StringBuilder sb = new StringBuilder();
-            if (config.isIncludeSender()) {
-                appendFormParam(sb, config.getKeySender(), qm.getSender());
-            }
-            if (config.isIncludeBody()) {
-                appendFormParam(sb, config.getKeyBody(), qm.getBody());
-            }
-            if (config.isIncludeTimestamp()) {
-                appendFormParam(sb, config.getKeyTimestamp(), String.valueOf(qm.getTimestamp()));
-            }
-            if (config.isIncludeSimSlot()) {
-                appendFormParam(sb, config.getKeySimSlot(), String.valueOf(qm.getSimSlot()));
-            }
-            if (config.isIncludeDeviceId()) {
-                appendFormParam(sb, config.getKeyDeviceId(), SessionManager.getInstance().getDeviceId());
-            }
-            Map<String, String> customFields = config.parseCustomFields();
-            for (Map.Entry<String, String> entry : customFields.entrySet()) {
-                appendFormParam(sb, entry.getKey(), entry.getValue());
-            }
-            return sb.toString();
-        } else {
-            JSONObject obj = new JSONObject();
-            if (config.isIncludeSender()) {
-                obj.put(config.getKeySender(), qm.getSender());
-            }
-            if (config.isIncludeBody()) {
-                obj.put(config.getKeyBody(), qm.getBody());
-            }
-            if (config.isIncludeTimestamp()) {
-                obj.put(config.getKeyTimestamp(), qm.getTimestamp());
-            }
-            if (config.isIncludeSimSlot()) {
-                obj.put(config.getKeySimSlot(), qm.getSimSlot());
-            }
-            if (config.isIncludeDeviceId()) {
-                obj.put(config.getKeyDeviceId(), SessionManager.getInstance().getDeviceId());
-            }
-            Map<String, String> customFields = config.parseCustomFields();
-            for (Map.Entry<String, String> entry : customFields.entrySet()) {
-                obj.put(entry.getKey(), entry.getValue());
-            }
-            return obj.toString();
-        }
-    }
-
-    private static void appendFormParam(StringBuilder sb, String key, String val) throws Exception {
-        if (sb.length() > 0) {
-            sb.append("&");
-        }
-        sb.append(URLEncoder.encode(key, StandardCharsets.UTF_8.name()));
-        sb.append("=");
-        sb.append(URLEncoder.encode(val != null ? val : "", StandardCharsets.UTF_8.name()));
     }
 }

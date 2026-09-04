@@ -4,18 +4,19 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import com.pay.sky.data.KeyValuePair;
 import com.pay.sky.data.SmsModel;
+import com.pay.sky.util.PayloadBuilder;
+import com.pay.sky.util.PreferencesManager;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,18 +33,17 @@ public class ApiClient {
     }
 
     public interface PingCallback {
-        void onResult(boolean ok, String description, boolean logout);
+        void onResult(boolean success, String description, boolean requireLogout);
     }
 
-    public static void login(String email, String deviceKey, ApiCallback callback) {
+    public static void login(String username, String password, String deviceId, ApiCallback callback) {
         EXECUTOR.execute(() -> {
             try {
                 JSONObject requestJson = new JSONObject();
-                requestJson.put("email", email);
-                requestJson.put("device_key", deviceKey);
-                requestJson.put("device_token", deviceKey);
+                requestJson.put("username", username);
+                requestJson.put("password", password);
+                requestJson.put("device_id", deviceId);
                 requestJson.put("app_version", "1.0.0");
-                requestJson.put("platform", "android");
                 requestJson.put("android_version", Build.VERSION.RELEASE);
                 requestJson.put("sdk_int", Build.VERSION.SDK_INT);
                 requestJson.put("model", Build.MODEL);
@@ -53,26 +53,16 @@ public class ApiClient {
                 String responseStr = executePost(endpoint, null, requestJson.toString());
 
                 JSONObject responseJson = new JSONObject(responseStr);
-                boolean success = responseJson.optBoolean("success", responseJson.optBoolean("status", false));
-                if (success || responseJson.has("token")) {
+                boolean success = responseJson.optBoolean("success", responseJson.optBoolean("ok", false));
+                if (success || responseJson.has("token") || responseJson.has("device_token")) {
                     MAIN_HANDLER.post(() -> callback.onSuccess(responseJson));
                 } else {
-                    String msg = responseJson.optString("message", "Invalid email or password.");
-                    MAIN_HANDLER.post(() -> callback.onError(msg));
+                    String message = responseJson.optString("message", responseJson.optString("error", "Authentication failed"));
+                    MAIN_HANDLER.post(() -> callback.onError(message));
                 }
-            } catch (SocketTimeoutException e) {
-                MAIN_HANDLER.post(() -> callback.onError("Connection timed out. Please try again."));
-            } catch (UnknownHostException | ConnectException e) {
-                MAIN_HANDLER.post(() -> callback.onError("No internet connection. Please verify your network."));
             } catch (Exception e) {
-                String msg = e.getMessage() != null ? e.getMessage() : "";
-                if (msg.contains("401") || msg.contains("403")) {
-                    MAIN_HANDLER.post(() -> callback.onError("Invalid email or device authorization key."));
-                } else if (msg.contains("500") || msg.contains("502") || msg.contains("503")) {
-                    MAIN_HANDLER.post(() -> callback.onError("Server error. Please try again later."));
-                } else {
-                    MAIN_HANDLER.post(() -> callback.onError("Authentication failed. Please check your credentials."));
-                }
+                String message = e.getMessage() != null ? e.getMessage() : "Network communication error";
+                MAIN_HANDLER.post(() -> callback.onError(message));
             }
         });
     }
@@ -80,8 +70,12 @@ public class ApiClient {
     public static void pingDevice(String token, String deviceId, String email, PingCallback callback) {
         EXECUTOR.execute(() -> {
             try {
+                if (token == null || token.trim().isEmpty()) {
+                    MAIN_HANDLER.post(() -> callback.onResult(true, "", false));
+                    return;
+                }
+
                 JSONObject requestJson = new JSONObject();
-                requestJson.put("token", token);
                 requestJson.put("device_token", token);
                 requestJson.put("device_id", deviceId);
                 requestJson.put("email", email);
@@ -142,24 +136,43 @@ public class ApiClient {
                     return;
                 }
 
-                JSONObject testPayload = new JSONObject();
-                testPayload.put("schema_version", "1");
-                testPayload.put("event", "webhook.test");
-                testPayload.put("timestamp", System.currentTimeMillis());
+                PreferencesManager prefs = PreferencesManager.getInstance();
+                String method = prefs.getHttpMethod();
+                String contentType = prefs.getPayloadContentType();
+                String deviceId = SessionManager.getInstance().getDeviceId();
+                List<KeyValuePair> headerRows = prefs.getHeaderRows();
+                List<KeyValuePair> bodyRows = prefs.getPostBodyRows();
 
-                String responseStr = executePost(webhookUrl, secret, testPayload.toString());
-                JSONObject responseJson;
-                try {
-                    responseJson = new JSONObject(responseStr);
-                } catch (Exception ignored) {
-                    responseJson = new JSONObject();
-                    responseJson.put("success", true);
-                    responseJson.put("message", "HTTP Connection OK");
+                SmsModel dummySms = new SmsModel();
+                dummySms.setId(1);
+                dummySms.setSender("SkyPay Test");
+                dummySms.setBody("Webhook connection test");
+                dummySms.setTimestamp(System.currentTimeMillis());
+                dummySms.setSimSlot(1);
+
+                Map<String, String> headers = PayloadBuilder.buildHeaders(headerRows, dummySms, contentType, secret, deviceId);
+                String payload = PayloadBuilder.buildPayload(bodyRows, contentType, dummySms, secret, deviceId);
+
+                String requestUrl = webhookUrl;
+                String requestBody = payload;
+                if ("GET".equalsIgnoreCase(method)) {
+                    String queryString = PayloadBuilder.buildQueryString(bodyRows, dummySms, contentType, secret, deviceId);
+                    if (queryString != null && !queryString.isEmpty()) {
+                        requestUrl += (requestUrl.contains("?") ? "&" : "?") + queryString;
+                    }
+                    requestBody = null;
                 }
-                final JSONObject result = responseJson;
-                MAIN_HANDLER.post(() -> callback.onSuccess(result));
+
+                String contentTypeHeader = PayloadBuilder.isFormUrlEncoded(contentType)
+                        ? "application/x-www-form-urlencoded" : "application/json; charset=UTF-8";
+
+                executeHttpRequest(requestUrl, method, contentTypeHeader, secret, headers, requestBody);
+                JSONObject responseJson = new JSONObject();
+                responseJson.put("success", true);
+                responseJson.put("status", 200);
+                MAIN_HANDLER.post(() -> callback.onSuccess(responseJson));
             } catch (Exception e) {
-                final String msg = e.getMessage() != null ? e.getMessage() : "Connection failed";
+                String msg = e.getMessage() != null ? e.getMessage() : "Connection failed";
                 MAIN_HANDLER.post(() -> callback.onError(msg));
             }
         });
@@ -185,19 +198,27 @@ public class ApiClient {
         if (contentType != null && !contentType.isEmpty()) {
             conn.setRequestProperty("Content-Type", contentType);
         }
-        conn.setRequestProperty("Accept", "application/json, text/plain, " + (char)42 + "/" + (char)42);
+        conn.setRequestProperty("Accept", "application/json, text/plain, */*");
 
-        if (bearerToken != null && !bearerToken.trim().isEmpty()) {
-            conn.setRequestProperty("Authorization", "Bearer " + bearerToken.trim());
-        }
-
+        boolean hasCustomAuth = false;
         if (customHeaders != null) {
             for (Map.Entry<String, String> entry : customHeaders.entrySet()) {
-                conn.setRequestProperty(entry.getKey(), entry.getValue());
+                if (entry.getKey() != null && !entry.getKey().trim().isEmpty()) {
+                    String k = entry.getKey().trim();
+                    String v = entry.getValue() != null ? entry.getValue() : "";
+                    if ("authorization".equalsIgnoreCase(k)) {
+                        hasCustomAuth = true;
+                    }
+                    conn.setRequestProperty(k, v);
+                }
             }
         }
 
-        boolean hasBody = !"GET".equalsIgnoreCase(method) && body != null;
+        if (!hasCustomAuth && bearerToken != null && !bearerToken.trim().isEmpty()) {
+            conn.setRequestProperty("Authorization", "Bearer " + bearerToken.trim());
+        }
+
+        boolean hasBody = !"GET".equalsIgnoreCase(method) && body != null && !body.isEmpty();
         if (hasBody) {
             conn.setDoOutput(true);
             byte[] outputBytes = body.getBytes(StandardCharsets.UTF_8);
@@ -226,7 +247,7 @@ public class ApiClient {
             String res = sb.toString().trim();
             return res.isEmpty() ? "{\"success\":true}" : res;
         } else {
-            throw new Exception("Server returned HTTP " + statusCode + (sb.length() > 0 ? ": " + sb.toString() : ""));
+            throw new Exception("Server returned HTTP " + statusCode);
         }
     }
 }

@@ -64,16 +64,20 @@ public class QueueMessagesActivity extends BaseActivity {
 
         btnClearAllQueue.setOnClickListener(v -> {
             HapticUtil.vibrateClick(this);
-            new AlertDialog.Builder(this)
-                    .setTitle("Clear Queue?")
-                    .setMessage("Are you sure you want to remove all pending queued messages?")
-                    .setPositiveButton("Clear All", (d, w) -> {
+            CustomConfirmationDialog.show(
+                    this,
+                    "lottie/delete_confirmation.json",
+                    "Clear Queue?",
+                    "Are you sure you want to remove all pending queued messages? These delivery attempts will not be retried.",
+                    "Clear All",
+                    "Cancel",
+                    true,
+                    () -> {
                         SmsDatabaseHelper.getInstance().clearQueuedMessages();
                         Toast.makeText(this, "Queue cleared", Toast.LENGTH_SHORT).show();
                         loadQueueData();
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+                    }
+            );
         });
 
         loadQueueData();

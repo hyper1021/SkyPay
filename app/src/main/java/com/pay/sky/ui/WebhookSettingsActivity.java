@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.pay.sky.R;
 import com.pay.sky.api.ApiClient;
+import com.pay.sky.util.HapticUtil;
 import com.pay.sky.util.PreferencesManager;
 import org.json.JSONObject;
 
@@ -32,7 +32,10 @@ public class WebhookSettingsActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setNavigationOnClickListener(v -> {
+            HapticUtil.vibrateClick(this);
+            finish();
+        });
 
         switchActive = findViewById(R.id.switchWebhookActive);
         etUrl = findViewById(R.id.etWhUrl);
@@ -46,8 +49,14 @@ public class WebhookSettingsActivity extends BaseActivity {
         etUrl.setText(prefs.getWebhookUrl());
         etSecret.setText(prefs.getWebhookSecret());
 
-        btnTest.setOnClickListener(v -> testConnection());
-        btnSave.setOnClickListener(v -> saveSettings());
+        btnTest.setOnClickListener(v -> {
+            HapticUtil.vibrateClick(this);
+            testConnection();
+        });
+        btnSave.setOnClickListener(v -> {
+            HapticUtil.vibrateClick(this);
+            saveSettings();
+        });
     }
 
     private void testConnection() {
@@ -57,16 +66,18 @@ public class WebhookSettingsActivity extends BaseActivity {
         if (url.isEmpty()) {
             tvTestResult.setText("Please enter a webhook URL");
             tvTestResult.setTextColor(0xFFEF4444);
+            Toast.makeText(this, "Please enter a webhook URL", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!url.startsWith("https://")) {
             tvTestResult.setText("URL must start with https://");
             tvTestResult.setTextColor(0xFFEF4444);
+            Toast.makeText(this, "URL must start with https://", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        tvTestResult.setText("Connecting...");
+        tvTestResult.setText("Testing connection...");
         tvTestResult.setTextColor(0xFF0284C7);
         btnTest.setEnabled(false);
 
@@ -74,15 +85,33 @@ public class WebhookSettingsActivity extends BaseActivity {
             @Override
             public void onSuccess(JSONObject response) {
                 btnTest.setEnabled(true);
-                tvTestResult.setText("Success: Server responded OK");
+                tvTestResult.setText("Connection successful\nStatus 200");
                 tvTestResult.setTextColor(0xFF10B981);
+                Toast.makeText(WebhookSettingsActivity.this, "Connection successful (Status 200)", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(String message) {
                 btnTest.setEnabled(true);
-                tvTestResult.setText("Error: " + message);
+                int statusCode = 0;
+                if (message != null && message.contains("HTTP ")) {
+                    try {
+                        int idx = message.indexOf("HTTP ");
+                        String codeStr = message.substring(idx + 5).trim();
+                        int endIdx = 0;
+                        while (endIdx < codeStr.length() && Character.isDigit(codeStr.charAt(endIdx))) {
+                            endIdx++;
+                        }
+                        if (endIdx > 0) {
+                            statusCode = Integer.parseInt(codeStr.substring(0, endIdx));
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+                String display = (statusCode > 0) ? ("Connection failed\nStatus " + statusCode) : "Connection failed";
+                tvTestResult.setText(display);
                 tvTestResult.setTextColor(0xFFEF4444);
+                Toast.makeText(WebhookSettingsActivity.this, display.replace("\n", " - "), Toast.LENGTH_SHORT).show();
             }
         });
     }

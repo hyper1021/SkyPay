@@ -17,7 +17,8 @@ import java.util.concurrent.Executors;
 
 public class SmsReceiver extends BroadcastReceiver {
 
-    public static final String ACTION_SMS_RECEIVED_EVENT = "com.pay.sky.broadcast.SMS_RECEIVED_EVENT";
+    public static final String ACTION_SMS_SAVED = "com.pay.sky.broadcast.SMS_SAVED";
+    public static final String ACTION_SMS_RECEIVED_EVENT = ACTION_SMS_SAVED;
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     @Override
@@ -147,7 +148,7 @@ public class SmsReceiver extends BroadcastReceiver {
         NotificationHelper.showSmsNotification(context, sms);
         PaymentGatewayDispatcher.dispatch(context, sms);
 
-        Intent broadcast = new Intent(ACTION_SMS_RECEIVED_EVENT);
+        Intent broadcast = new Intent(ACTION_SMS_SAVED);
         broadcast.setPackage(context.getPackageName());
         context.sendBroadcast(broadcast);
     }

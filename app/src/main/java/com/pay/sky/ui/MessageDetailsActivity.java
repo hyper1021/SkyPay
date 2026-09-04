@@ -3,6 +3,7 @@ package com.pay.sky.ui;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import com.pay.sky.R;
 import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
 import com.pay.sky.util.HapticUtil;
+import com.pay.sky.util.PaymentGatewayDispatcher;
 
 public class MessageDetailsActivity extends BaseActivity {
 
@@ -20,6 +22,8 @@ public class MessageDetailsActivity extends BaseActivity {
     public static final String EXTRA_DISMISS_NOTIF_ID = "extra_dismiss_notif_id";
     private SmsModel currentSms;
     private MaterialButton btnMuteSender;
+    private MaterialButton btnSendWebhook;
+    private MaterialButton btnCopyBody;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,10 @@ public class MessageDetailsActivity extends BaseActivity {
         TextView tvBody = findViewById(R.id.tvDetailBody);
         TextView tvSmsId = findViewById(R.id.tvDetailSmsId);
         TextView tvWebhookStatus = findViewById(R.id.tvDetailWebhookStatus);
+
         btnMuteSender = findViewById(R.id.btnMuteSender);
+        btnSendWebhook = findViewById(R.id.btnSendWebhook);
+        btnCopyBody = findViewById(R.id.btnCopyBody);
 
         String sender = currentSms.getSender();
         toolbar.setTitle(sender);
@@ -82,20 +89,30 @@ public class MessageDetailsActivity extends BaseActivity {
 
         updateMuteButtonState(sender);
 
-        findViewById(R.id.btnCopyBody).setOnClickListener(v -> {
-            HapticUtil.vibrateClick(this);
-            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            if (cm != null) {
-                ClipData clip = ClipData.newPlainText("SkyPay SMS", currentSms.getBody());
-                cm.setPrimaryClip(clip);
-                Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         btnMuteSender.setOnClickListener(v -> {
             HapticUtil.vibrateClick(this);
             toggleMuteState(sender);
         });
+
+        if (btnSendWebhook != null) {
+            btnSendWebhook.setOnClickListener(v -> {
+                HapticUtil.vibrateClick(this);
+                PaymentGatewayDispatcher.dispatch(this, currentSms);
+                Toast.makeText(this, "Dispatching message to webhook...", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        if (btnCopyBody != null) {
+            btnCopyBody.setOnClickListener(v -> {
+                HapticUtil.vibrateClick(this);
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                if (cm != null) {
+                    ClipData clip = ClipData.newPlainText("SkyPay SMS", currentSms.getBody());
+                    cm.setPrimaryClip(clip);
+                    Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void updateMuteButtonState(String sender) {
@@ -103,9 +120,15 @@ public class MessageDetailsActivity extends BaseActivity {
         if (isMuted) {
             btnMuteSender.setText("Unmute");
             btnMuteSender.setIconResource(R.drawable.ic_check);
+            btnMuteSender.setTextColor(0xFF10B981);
+            btnMuteSender.setIconTint(ColorStateList.valueOf(0xFF10B981));
+            btnMuteSender.setStrokeColor(ColorStateList.valueOf(0xFF6EE7B7));
         } else {
-            btnMuteSender.setText("Mute Sender");
+            btnMuteSender.setText("Mute");
             btnMuteSender.setIconResource(R.drawable.ic_mute);
+            btnMuteSender.setTextColor(0xFFEF4444);
+            btnMuteSender.setIconTint(ColorStateList.valueOf(0xFFEF4444));
+            btnMuteSender.setStrokeColor(ColorStateList.valueOf(0xFFFCA5A5));
         }
     }
 
@@ -119,7 +142,7 @@ public class MessageDetailsActivity extends BaseActivity {
             Toast.makeText(this, "Unmuted " + sender, Toast.LENGTH_SHORT).show();
         } else {
             SmsDatabaseHelper.getInstance().muteSender(sender);
-            Toast.makeText(this, "Muted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Muted " + sender, Toast.LENGTH_SHORT).show();
         }
         updateMuteButtonState(sender);
     }

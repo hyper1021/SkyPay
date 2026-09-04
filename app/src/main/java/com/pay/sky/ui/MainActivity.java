@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +39,7 @@ import com.pay.sky.R;
 import com.pay.sky.api.SessionManager;
 import com.pay.sky.data.SmsDatabaseHelper;
 import com.pay.sky.data.SmsModel;
+import com.pay.sky.receiver.SmsReceiver;
 import com.pay.sky.ui.view.SmsBarChartView;
 import com.pay.sky.util.HapticUtil;
 import com.pay.sky.util.PreferencesManager;
@@ -171,36 +171,29 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
     }
 
     private void showPingErrorCustomDialog(String desc, boolean logout) {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_ping_error);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        CustomConfirmationDialog.show(
+                this,
+                "lottie/server_connection_failed.json",
+                "Connection Alert",
+                (desc != null && !desc.trim().isEmpty()) ? desc.trim() : "Device token has expired or is unauthorized.",
+                "OK",
+                null,
+                logout,
+                () -> {
+                    if (logout) {
+                        SessionManager.init(this);
+                        SessionManager.getInstance().logout();
+                        SmsDatabaseHelper.init(this);
+                        SmsDatabaseHelper.getInstance().clearAll();
 
-        TextView tvDesc = dialog.findViewById(R.id.tvPingErrorDesc);
-        if (desc != null && !desc.trim().isEmpty()) {
-            tvDesc.setText(desc.trim());
-        }
-
-        dialog.findViewById(R.id.btnOkPingError).setOnClickListener(v -> {
-            HapticUtil.vibrateClick(this);
-            dialog.dismiss();
-            if (logout) {
-                SessionManager.init(this);
-                SessionManager.getInstance().logout();
-                SmsDatabaseHelper.init(this);
-                SmsDatabaseHelper.getInstance().clearAll();
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                finish();
-            }
-        });
-
-        dialog.setCancelable(false);
-        dialog.show();
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        finish();
+                    }
+                }
+        );
     }
 
     @Override
@@ -273,87 +266,66 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
     }
 
     private void showPauseConfirmationDialog() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_pause_confirm);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
-        View btnCancel = dialog.findViewById(R.id.btnCancelPause);
-        Button btnConfirm = dialog.findViewById(R.id.btnConfirmPause);
-        ProgressBar pbLoading = dialog.findViewById(R.id.pbPauseLoading);
-
-        btnCancel.setOnClickListener(v -> {
-            HapticUtil.vibrateClick(this);
-            dialog.dismiss();
-        });
-
-        btnConfirm.setOnClickListener(v -> {
-            HapticUtil.vibrateClick(this);
-            btnConfirm.setEnabled(false);
-            btnConfirm.setText("");
-            pbLoading.setVisibility(View.VISIBLE);
-
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                PreferencesManager.getInstance().setPaused(true);
-                updatePowerMenuIcon();
-                dialog.dismiss();
-                Toast.makeText(this, "SkyPay paused", Toast.LENGTH_SHORT).show();
-            }, 300);
-        });
-
-        dialog.show();
+        CustomConfirmationDialog.show(
+                this,
+                "lottie/warning_alert.json",
+                "Pause POS Service?",
+                "Are you sure you want to pause real-time SMS capture and webhook forwarding? The service will remain in standby until resumed.",
+                "Pause Service",
+                "Cancel",
+                true,
+                () -> {
+                    PreferencesManager.getInstance().setPaused(true);
+                    updatePowerMenuIcon();
+                    Toast.makeText(this, "SkyPay paused", Toast.LENGTH_SHORT).show();
+                }
+        );
     }
 
     private void confirmClearHistory() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.menu_clear_history)
-                .setMessage("Are you sure you want to clear all message records from this device? Queued messages will also be removed.")
-                .setPositiveButton("Clear All", (d, w) -> {
+        CustomConfirmationDialog.show(
+                this,
+                "lottie/delete_confirmation.json",
+                "Clear Message History?",
+                "Are you sure you want to clear all message records from this device? Queued messages will also be removed.",
+                "Clear All",
+                "Cancel",
+                true,
+                () -> {
+                    SmsDatabaseHelper.init(this);
                     SmsDatabaseHelper.getInstance().clearAll();
                     loadDashboardData();
                     Toast.makeText(this, "Message history cleared", Toast.LENGTH_SHORT).show();
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+                }
+        );
     }
 
     private void confirmSignOut() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_logout_confirm);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+        CustomConfirmationDialog.show(
+                this,
+                "lottie/logout_success.json",
+                "Sign Out?",
+                "Are you sure you want to sign out? Your authenticated device token and local message records will be cleared from this device.",
+                "Sign Out",
+                "Cancel",
+                true,
+                () -> {
+                    SessionManager.init(this);
+                    SessionManager.getInstance().logout();
 
-        dialog.findViewById(R.id.btnCancelLogout).setOnClickListener(v -> {
-            HapticUtil.vibrateClick(this);
-            dialog.dismiss();
-        });
+                    SmsDatabaseHelper.init(this);
+                    SmsDatabaseHelper.getInstance().clearAll();
 
-        dialog.findViewById(R.id.btnConfirmLogout).setOnClickListener(v -> {
-            HapticUtil.vibrateClick(this);
-            dialog.dismiss();
+                    Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show();
 
-            SessionManager.init(this);
-            SessionManager.getInstance().logout();
-
-            SmsDatabaseHelper.init(this);
-            SmsDatabaseHelper.getInstance().clearAll();
-
-            Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            finish();
-        });
-
-        dialog.show();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    finish();
+                }
+        );
     }
-
     private void setChartMode(int days) {
         currentChartDays = days;
         if (days == 7) {
@@ -498,9 +470,7 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
         loadDashboardData();
         checkPermissionsState();
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.pay.sky.ACTION_SMS_SAVED");
-        filter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+        IntentFilter filter = new IntentFilter(SmsReceiver.ACTION_SMS_SAVED);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(smsUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {

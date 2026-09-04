@@ -93,10 +93,103 @@
                         </LinearLayout>
 
                         <ImageView
+                            android:id="@+id/ivThemeChevron"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_chevron_right"
                             android:contentDescription="Select" />
+                    </LinearLayout>
+
+                    <!-- Inline Expandable Theme Options -->
+                    <LinearLayout
+                        android:id="@+id/layoutThemeOptions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@color/colorSearchBackground"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:id="@+id/optionThemeSystem"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="20dp"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="System Default"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp" />
+                            <ImageView
+                                android:id="@+id/ivCheckThemeSystem"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_check"
+                                android:tint="@color/colorPrimary"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+
+                        <LinearLayout
+                            android:id="@+id/optionThemeLight"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="20dp"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Light"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp" />
+                            <ImageView
+                                android:id="@+id/ivCheckThemeLight"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_check"
+                                android:tint="@color/colorPrimary"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+
+                        <LinearLayout
+                            android:id="@+id/optionThemeDark"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="20dp"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Dark"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp" />
+                            <ImageView
+                                android:id="@+id/ivCheckThemeDark"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_check"
+                                android:tint="@color/colorPrimary"
+                                android:visibility="gone" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <View
@@ -139,10 +232,103 @@
                         </LinearLayout>
 
                         <ImageView
+                            android:id="@+id/ivOrientationChevron"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_chevron_right"
                             android:contentDescription="Select" />
+                    </LinearLayout>
+
+                    <!-- Inline Expandable Orientation Options -->
+                    <LinearLayout
+                        android:id="@+id/layoutOrientationOptions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@color/colorSearchBackground"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:id="@+id/optionOrientationSystem"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="20dp"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="System Default"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp" />
+                            <ImageView
+                                android:id="@+id/ivCheckOrientationSystem"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_check"
+                                android:tint="@color/colorPrimary"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+
+                        <LinearLayout
+                            android:id="@+id/optionOrientationPortrait"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="20dp"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Portrait"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp" />
+                            <ImageView
+                                android:id="@+id/ivCheckOrientationPortrait"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_check"
+                                android:tint="@color/colorPrimary"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+
+                        <LinearLayout
+                            android:id="@+id/optionOrientationLandscape"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="20dp"
+                            android:clickable="true"
+                            android:focusable="true">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Landscape"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp" />
+                            <ImageView
+                                android:id="@+id/ivCheckOrientationLandscape"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_check"
+                                android:tint="@color/colorPrimary"
+                                android:visibility="gone" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <View
@@ -410,7 +596,7 @@
                         android:background="@color/colorDivider" />
 
                     <LinearLayout
-                        android:id="@+id/rowDataPayload"
+                        android:id="@+id/rowHeaders"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -428,7 +614,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Data Payload"
+                                android:text="Headers"
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -437,7 +623,52 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Customize HTTP method, headers &amp; webhook payload keys"
+                                android:text="Configure request headers and authentication"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_chevron_right"
+                            android:contentDescription="Open" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorDivider" />
+
+                    <LinearLayout
+                        android:id="@+id/rowPostBody"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Post Body"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Configure request body fields"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>

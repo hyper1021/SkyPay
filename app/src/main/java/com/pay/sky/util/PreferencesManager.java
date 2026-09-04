@@ -2,6 +2,8 @@ package com.pay.sky.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import java.util.List;
+import com.pay.sky.data.KeyValuePair;
 
 public class PreferencesManager {
 
@@ -15,6 +17,10 @@ public class PreferencesManager {
     private static final String KEY_NOTIFICATIONS_HIDDEN = "key_notifications_hidden";
     private static final String KEY_HAPTIC_ENABLED = "key_haptic_enabled";
     private static final String KEY_ORIENTATION_MODE = "key_orientation_mode";
+    private static final String KEY_HTTP_METHOD = "key_http_method";
+    private static final String KEY_CONTENT_TYPE = "key_content_type";
+    private static final String KEY_POST_BODY_ROWS = "key_post_body_rows";
+    private static final String KEY_HEADER_ROWS = "key_header_rows";
 
     public static final int ORIENTATION_SYSTEM = 0;
     public static final int ORIENTATION_PORTRAIT = 1;
@@ -113,5 +119,53 @@ public class PreferencesManager {
 
     public void setOrientationMode(int mode) {
         prefs.edit().putInt(KEY_ORIENTATION_MODE, mode).apply();
+    }
+
+    public String getHttpMethod() {
+        return prefs.getString(KEY_HTTP_METHOD, "POST");
+    }
+
+    public void setHttpMethod(String method) {
+        prefs.edit().putString(KEY_HTTP_METHOD, (method != null && !method.trim().isEmpty()) ? method.trim().toUpperCase() : "POST").apply();
+    }
+
+    public String getPayloadContentType() {
+        return prefs.getString(KEY_CONTENT_TYPE, "Application JSON");
+    }
+
+    public void setPayloadContentType(String type) {
+        prefs.edit().putString(KEY_CONTENT_TYPE, (type != null && !type.trim().isEmpty()) ? type.trim() : "Application JSON").apply();
+    }
+
+    public List<KeyValuePair> getPostBodyRows() {
+        String json = prefs.getString(KEY_POST_BODY_ROWS, null);
+        if (json == null || json.trim().isEmpty()) {
+            return KeyValuePair.getDefaultPostBodyRows();
+        }
+        List<KeyValuePair> list = KeyValuePair.listFromJson(json);
+        if (list.isEmpty()) {
+            return KeyValuePair.getDefaultPostBodyRows();
+        }
+        return list;
+    }
+
+    public void savePostBodyRows(List<KeyValuePair> rows) {
+        prefs.edit().putString(KEY_POST_BODY_ROWS, KeyValuePair.listToJson(rows)).apply();
+    }
+
+    public List<KeyValuePair> getHeaderRows() {
+        String json = prefs.getString(KEY_HEADER_ROWS, null);
+        if (json == null || json.trim().isEmpty()) {
+            return KeyValuePair.getDefaultHeaderRows();
+        }
+        List<KeyValuePair> list = KeyValuePair.listFromJson(json);
+        if (list.isEmpty()) {
+            return KeyValuePair.getDefaultHeaderRows();
+        }
+        return list;
+    }
+
+    public void saveHeaderRows(List<KeyValuePair> rows) {
+        prefs.edit().putString(KEY_HEADER_ROWS, KeyValuePair.listToJson(rows)).apply();
     }
 }
