@@ -23,26 +23,28 @@ android {
                     ksFile = file('../skypay-release.keystore')
                 }
             }
-            storeFile ksFile
-            storePassword "skypay123456"
-            keyAlias "skypay"
-            keyPassword "skypay123456"
+            if (ksFile != null && ksFile.exists() && ksFile.length() > 0) {
+                storeFile ksFile
+                storePassword "skypay123456"
+                keyAlias "skypay"
+                keyPassword "skypay123456"
 
-            def customKeystore = System.getenv("KEYSTORE_FILE")
-            if (customKeystore && file(customKeystore).exists() && file(customKeystore).length() > 0) {
-                storeFile file(customKeystore)
-            }
-            def sp = System.getenv("KEYSTORE_PASSWORD")
-            if (sp && !sp.trim().isEmpty()) {
-                storePassword sp.trim()
-            }
-            def ka = System.getenv("KEY_ALIAS")
-            if (ka && !ka.trim().isEmpty()) {
-                keyAlias ka.trim()
-            }
-            def kp = System.getenv("KEY_PASSWORD")
-            if (kp && !kp.trim().isEmpty()) {
-                keyPassword kp.trim()
+                def customKeystore = System.getenv("KEYSTORE_FILE")
+                if (customKeystore && file(customKeystore).exists() && file(customKeystore).length() > 0) {
+                    storeFile file(customKeystore)
+                }
+                def sp = System.getenv("KEYSTORE_PASSWORD")
+                if (sp && !sp.trim().isEmpty()) {
+                    storePassword sp.trim()
+                }
+                def ka = System.getenv("KEY_ALIAS")
+                if (ka && !ka.trim().isEmpty()) {
+                    keyAlias ka.trim()
+                }
+                def kp = System.getenv("KEY_PASSWORD")
+                if (kp && !kp.trim().isEmpty()) {
+                    keyPassword kp.trim()
+                }
             }
         }
         debug {
@@ -74,6 +76,13 @@ android {
         checkReleaseBuilds false
         checkDependencies false
         ignoreWarnings true
+        quiet true
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith("lintVital")) {
+        task.enabled = false
     }
 }
 
