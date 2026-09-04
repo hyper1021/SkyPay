@@ -66,7 +66,7 @@ public class AboutActivity extends BaseActivity {
     private void openWhatsapp(String phone) {
         try {
             String cleanPhone = phone.replaceAll("[^0-9]", "");
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("whatsapp:/" + "/send?phone=" + phone));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=" + cleanPhone));
             intent.setPackage("com.whatsapp");
             startActivity(intent);
         } catch (Exception e) {

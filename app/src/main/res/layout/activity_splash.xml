@@ -21,7 +21,7 @@
             android:id="@+id/ivSplashLogo"
             android:layout_width="@dimen/splash_logo_size"
             android:layout_height="@dimen/splash_logo_size"
-            android:adjustViewBounds="true"
+            
             android:scaleType="fitCenter"
             android:src="@drawable/ic_skypay_logo"
             android:contentDescription="@string/app_name" />

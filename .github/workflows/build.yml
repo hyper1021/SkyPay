@@ -24,16 +24,25 @@ jobs:
 
       - name: Ensure Keystore Exists
         run: |
-          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/skypay-release.keystore 2>/dev/null || true
+          KEYSTORE_SECRET="${{ secrets.KEYSTORE_BASE64 }}"
+          if [ -n "$KEYSTORE_SECRET" ] && [ "$KEYSTORE_SECRET" != '""' ]; then
+            echo "$KEYSTORE_SECRET" | base64 -d > /tmp/decoded_ks 2>/dev/null || true
+            if [ -s "/tmp/decoded_ks" ]; then
+              cp /tmp/decoded_ks app/skypay-release.keystore
+            fi
+            rm -f /tmp/decoded_ks
           fi
-          if [ ! -f "app/skypay-release.keystore" ]; then
+          if [ ! -s "app/skypay-release.keystore" ]; then
             echo "Generating production release keystore..."
+            rm -f app/skypay-release.keystore
             keytool -genkeypair -v -keystore app/skypay-release.keystore -alias skypay -keyalg RSA -keysize 2048 -validity 10000 -storepass skypay123456 -keypass skypay123456 -dname "CN=SkyPay, OU=Mobile, O=SkyPay, L=Dhaka, ST=Dhaka, C=BD"
           fi
+          cp app/skypay-release.keystore ./skypay-release.keystore
+          ls -la app/skypay-release.keystore
 
       - name: Grant execute permission for gradlew
         run: |
+          chmod +x ./gradlew || true
           find . -name "gradlew" -exec chmod +x {} \;
 
       - name: Build Production APK
@@ -52,7 +61,7 @@ jobs:
           echo "Building in $PROJECT_DIR"
           cd "$PROJECT_DIR"
           chmod +x ./gradlew
-          ./gradlew assembleRelease --stacktrace --no-daemon || ./gradlew assembleDebug --stacktrace --no-daemon
+          ./gradlew assembleRelease --stacktrace --no-daemon
           mkdir -p "$GITHUB_WORKSPACE/apk-output"
           find . -name "*.apk" -exec cp {} "$GITHUB_WORKSPACE/apk-output/" \;
           echo "Built APK files:"
