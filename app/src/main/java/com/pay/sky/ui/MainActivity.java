@@ -469,6 +469,8 @@ public class MainActivity extends BaseActivity implements SmsAdapter.OnItemClick
         super.onResume();
         loadDashboardData();
         checkPermissionsState();
+        // অ্যাপ সামনে এলে pending queue পাঠানোর চেষ্টা করো
+        QueueDispatcher.retryQueueAsync(this, null);
 
         IntentFilter filter = new IntentFilter(SmsReceiver.ACTION_SMS_SAVED);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

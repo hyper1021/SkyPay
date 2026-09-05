@@ -83,4 +83,3 @@ jobs:
           name: SkyPay
           path: apk-output/
           if-no-files-found: error
-           
