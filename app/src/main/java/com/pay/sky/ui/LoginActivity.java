@@ -39,8 +39,12 @@ public class LoginActivity extends BaseActivity {
 
         SharedPreferences sp = getSharedPreferences("skypay_login_cache", Context.MODE_PRIVATE);
         String cachedEmail = sp.getString("saved_email", "");
+        String cachedKey   = sp.getString("saved_device_key", "");
         if (!cachedEmail.isEmpty()) {
             etEmail.setText(cachedEmail);
+        }
+        if (!cachedKey.isEmpty()) {
+            etDeviceKey.setText(cachedKey);
         }
 
         btnLogin.setOnClickListener(v -> {
@@ -58,11 +62,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void attemptLogin() {
-        if (isLoggingIn) {
-            return;
-        }
+        if (isLoggingIn) return;
 
-        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        String email     = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
         String deviceKey = etDeviceKey.getText() != null ? etDeviceKey.getText().toString().trim() : "";
 
         if (email.isEmpty()) {
@@ -70,19 +72,16 @@ public class LoginActivity extends BaseActivity {
             etEmail.requestFocus();
             return;
         }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.setError("Please enter a valid email address");
             etEmail.requestFocus();
             return;
         }
-
         if (deviceKey.isEmpty()) {
             etDeviceKey.setError("Device authorization key is required");
             etDeviceKey.requestFocus();
             return;
         }
-
         if (deviceKey.length() < 4) {
             etDeviceKey.setError("Device key must be at least 4 characters");
             etDeviceKey.requestFocus();
@@ -95,20 +94,24 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onSuccess(JSONObject response) {
                 setLoading(false);
-                String token = response.optString("token", response.optString("device_token", deviceKey));
-                JSONObject userObj = response.optJSONObject("user");
-                String name = (userObj != null) ? userObj.optString("name", "SkyPay Merchant") : "SkyPay Merchant";
-                JSONObject devObj = response.optJSONObject("device");
-                String devId = (devObj != null) ? devObj.optString("id", deviceKey) : deviceKey;
 
+                // Server response: { "ok": true, "description": "<uid>" }
+                // description-এ আসা uid সেশনে দরকার নেই — শুধু email ও device_key রাখা হয়।
                 SessionManager.init(LoginActivity.this);
-                SessionManager.getInstance().saveSession(token, email, name, devId);
+                SessionManager.getInstance().saveSession(deviceKey, email, "SkyPay User");
 
+                // Remember-me cache
                 SharedPreferences sp = getSharedPreferences("skypay_login_cache", Context.MODE_PRIVATE);
                 if (cbRemember.isChecked()) {
-                    sp.edit().putString("saved_email", email).apply();
+                    sp.edit()
+                      .putString("saved_email", email)
+                      .putString("saved_device_key", deviceKey)
+                      .apply();
                 } else {
-                    sp.edit().remove("saved_email").apply();
+                    sp.edit()
+                      .remove("saved_email")
+                      .remove("saved_device_key")
+                      .apply();
                 }
 
                 Toast.makeText(LoginActivity.this, "Authentication successful", Toast.LENGTH_SHORT).show();

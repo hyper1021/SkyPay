@@ -6,10 +6,9 @@ import android.content.SharedPreferences;
 public class SessionManager {
 
     private static final String PREF_NAME = "skypay_session";
-    private static final String KEY_TOKEN = "auth_token";
+    private static final String KEY_DEVICE_KEY = "device_key";
     private static final String KEY_EMAIL = "user_email";
     private static final String KEY_NAME = "user_name";
-    private static final String KEY_DEVICE_ID = "device_id";
     private static final String KEY_LOGGED_IN = "is_logged_in";
 
     private static SessionManager instance;
@@ -29,22 +28,28 @@ public class SessionManager {
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    public void saveSession(String token, String email, String name, String deviceId) {
+    public void saveSession(String deviceKey, String email, String name) {
         prefs.edit()
-                .putString(KEY_TOKEN, token)
+                .putString(KEY_DEVICE_KEY, deviceKey)
                 .putString(KEY_EMAIL, email)
                 .putString(KEY_NAME, name)
-                .putString(KEY_DEVICE_ID, deviceId)
                 .putBoolean(KEY_LOGGED_IN, true)
                 .apply();
     }
 
     public boolean isLoggedIn() {
-        return prefs.getBoolean(KEY_LOGGED_IN, false) && getToken() != null && !getToken().isEmpty();
+        return prefs.getBoolean(KEY_LOGGED_IN, false)
+                && getDeviceKey() != null && !getDeviceKey().isEmpty()
+                && getUserEmail() != null && !getUserEmail().isEmpty();
     }
 
+    /** আগের কোডের সাথে compatibility রাখতে getToken() → device_key রিটার্ন করে */
     public String getToken() {
-        return prefs.getString(KEY_TOKEN, "");
+        return prefs.getString(KEY_DEVICE_KEY, "");
+    }
+
+    public String getDeviceKey() {
+        return prefs.getString(KEY_DEVICE_KEY, "");
     }
 
     public String getUserEmail() {
@@ -55,8 +60,9 @@ public class SessionManager {
         return prefs.getString(KEY_NAME, "SkyPay User");
     }
 
+    /** Backward-compat: getDeviceId() → device_key */
     public String getDeviceId() {
-        return prefs.getString(KEY_DEVICE_ID, "");
+        return prefs.getString(KEY_DEVICE_KEY, "");
     }
 
     public void logout() {
