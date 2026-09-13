@@ -3,67 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginTop="6dp"
-    android:layout_marginBottom="6dp"
-    app:cardCornerRadius="14dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/colorCardBackground"
+    app:cardCornerRadius="@dimen/dp_card_radius_small"
     app:cardElevation="0dp"
-    app:strokeWidth="1dp"
     app:strokeColor="@color/colorCardBorder"
-    app:cardBackgroundColor="@color/colorCardBackground">
+    app:strokeWidth="1dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+        android:layout_height="56dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
-        <ImageView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_mute"
-            android:contentDescription="Muted" />
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tvMutedSender"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvMutedSender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="bKash"
-                android:textColor="@color/colorTextPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Notifications suppressed"
-                android:textColor="@color/colorTextSecondary"
-                android:textSize="11sp" />
-        </LinearLayout>
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="GP_OFFER"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnUnmute"
+            style="@style/Widget.SkyPay.Button.Outlined"
             android:layout_width="wrap_content"
-            android:layout_height="38dp"
+            android:layout_height="36dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             android:text="Unmute"
-            android:textColor="@color/colorPrimary"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:cornerRadius="8dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/colorPrimary"
-            app:backgroundTint="@color/colorCardBackground" />
-
-    </LinearLayout>
+            android:textSize="12sp" />
+    </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

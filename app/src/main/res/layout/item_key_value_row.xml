@@ -1,57 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:minHeight="52dp"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp">
 
     <EditText
         android:id="@+id/etRowKey"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@null"
-        android:gravity="center_vertical"
         android:hint="Key"
-        android:imeOptions="actionNext"
-        android:inputType="textNoSuggestions"
-        android:paddingStart="14dp"
-        android:paddingEnd="10dp"
-        android:singleLine="true"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:textColor="@color/colorTextPrimary"
         android:textColorHint="@color/colorTextTertiary"
-        android:textSize="13sp" />
+        android:textSize="14sp" />
 
     <View
         android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorCardBorder" />
+        android:layout_height="24dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:background="@color/colorDivider" />
 
     <EditText
         android:id="@+id/etRowValue"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@null"
-        android:gravity="center_vertical"
         android:hint="Value"
-        android:imeOptions="actionDone"
-        android:inputType="textNoSuggestions"
-        android:paddingStart="12dp"
-        android:paddingEnd="6dp"
-        android:singleLine="true"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:textColor="@color/colorTextPrimary"
         android:textColorHint="@color/colorTextTertiary"
-        android:textSize="13sp" />
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/ivDeleteRow"
-        android:layout_width="36dp"
-        android:layout_height="match_parent"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="6dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Delete field"
-        android:padding="9dp"
-        android:scaleType="fitCenter"
+        android:contentDescription="Remove row"
+        android:padding="5dp"
         android:src="@drawable/ic_clear"
-        android:tint="@color/colorTextTertiary" />
+        app:tint="@color/colorTextTertiary" />
+
 </LinearLayout>

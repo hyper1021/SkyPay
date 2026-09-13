@@ -1,152 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@drawable/bg_gradient_login">
 
-    <androidx.core.widget.NestedScrollView
+    <!-- Floating Background Bubble 1 (Top-Right) -->
+    <ImageView
+        android:id="@+id/bubble1"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:alpha="0.18"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:src="@drawable/bg_bubble_layer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Floating Background Bubble 2 (Bottom-Left) -->
+    <ImageView
+        android:id="@+id/bubble2"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginBottom="100dp"
+        android:alpha="0.12"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:src="@drawable/bg_bubble_layer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Floating Background Bubble 3 (Mid-Left) -->
+    <ImageView
+        android:id="@+id/bubble3"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:alpha="0.10"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:src="@drawable/bg_bubble_layer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <!-- Main Scrollable Content Container -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:gravity="center"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+            android:paddingStart="24dp"
+            android:paddingTop="36dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="36dp">
 
-            <ImageView
-                android:layout_width="@dimen/login_logo_size"
-                android:layout_height="@dimen/login_logo_size"
-                
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_skypay_logo"
-                android:contentDescription="@string/app_name" />
+            <!-- Logo & Ambient Halo Ring -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:alpha="0.30"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/bg_bubble_layer" />
+
+                <ImageView
+                    android:id="@+id/ivLoginLogo"
+                    android:layout_width="@dimen/login_logo_size"
+                    android:layout_height="@dimen/login_logo_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/app_name"
+                    app:srcCompat="@drawable/ic_skypay_logo" />
+            </FrameLayout>
+
+            <!-- Title & Subtitle -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:fontFamily="sans-serif-medium"
                 android:text="SkyPay Gateway"
-                android:textColor="@color/colorTextPrimary"
-                android:textSize="22sp"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:text="Device Authentication &amp; Listener"
-                android:textColor="@color/colorTextSecondary"
+                android:textColor="#8BA0C0"
                 android:textSize="12sp" />
 
+            <!-- Login Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="16dp"
+                android:layout_marginTop="28dp"
+                app:cardBackgroundColor="#12233D"
+                app:cardCornerRadius="@dimen/dp_card_radius"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/colorCardBorder"
-                app:cardBackgroundColor="@color/colorCardBackground">
+                app:strokeColor="#1E3A5C"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="18dp">
+                    android:padding="22dp">
 
+                    <!-- Account Email Label -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Account Email"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textSize="13sp"
+                        android:textColor="#8BA0C0"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/etLoginEmail"
                         android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_field"
+                        android:layout_height="@dimen/dp_input_height"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input_field_login"
                         android:hint="merchant@domain.com"
+                        android:importantForAutofill="no"
                         android:inputType="textEmailAddress"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textColorHint="@color/colorTextTertiary"
-                        android:textSize="14sp"
-                        android:singleLine="true" />
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="#E6F0FF"
+                        android:textColorHint="#5B7494"
+                        android:textSize="14sp" />
 
+                    <!-- Device Key Label -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="16dp"
                         android:text="Device Authorization Key"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textSize="13sp"
+                        android:textColor="#8BA0C0"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/etLoginDeviceKey"
                         android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@drawable/bg_search_field"
-                        android:hint="Enter registered device key"
+                        android:layout_height="@dimen/dp_input_height"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input_field_login"
+                        android:hint="••••••••••••"
+                        android:importantForAutofill="no"
                         android:inputType="textPassword"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textColorHint="@color/colorTextTertiary"
-                        android:textSize="14sp"
-                        android:singleLine="true" />
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="#E6F0FF"
+                        android:textColorHint="#5B7494"
+                        android:textSize="14sp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <!-- Remember Me CheckBox -->
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cbRememberMe"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:layout_marginTop="14dp"
+                        android:checked="true"
+                        android:text="Remember Device"
+                        android:textColor="#8BA0C0"
+                        android:textSize="13sp"
+                        app:buttonTint="@color/colorPrimary" />
 
-                        <com.google.android.material.checkbox.MaterialCheckBox
-                            android:id="@+id/cbRememberMe"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="Remember Device"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
+                    <!-- Sign In Action Container -->
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="14dp">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnLogin"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="@dimen/dp_button_height"
+                            android:background="@drawable/bg_btn_primary_gradient"
                             android:text="Sign In"
+                            android:textAllCaps="false"
                             android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
-                            app:cornerRadius="10dp"
-                            app:backgroundTint="@color/colorPrimary" />
+                            app:backgroundTint="@null"
+                            app:cornerRadius="14dp"
+                            app:elevation="2dp" />
 
                         <ProgressBar
                             android:id="@+id/pbLoginLoading"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
                             android:layout_gravity="center"
-                            android:indeterminate="true"
                             android:indeterminateTint="#FFFFFF"
                             android:visibility="gone" />
                     </FrameLayout>
@@ -154,17 +214,25 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/tvLoginHelp"
+            <!-- Help Link -->
+            <LinearLayout
+                android:id="@+id/layoutLoginHelp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:padding="8dp"
-                android:text="How does device authentication work? Need Help"
-                android:textColor="@color/colorPrimary"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tvLoginHelp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="How does device authentication work? Need Help"
+                    android:textColor="#4C9AFF"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

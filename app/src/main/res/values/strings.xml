@@ -1,55 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SkyPay</string>
-    <string name="service_name">SkyPay SMS Reader</string>
-    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="app_desc">SkyPay SMS Reader</string>
+    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout</string>
     <string name="notification_channel_name">SkyPay Transaction Alerts</string>
     <string name="notification_channel_desc">Notifications for incoming payment and transaction SMS messages</string>
-    <string name="notification_alert_title">SkyPay • Payment SMS Detected</string>
-    
+    <string name="notification_title_detected">SkyPay • Payment SMS Detected</string>
     <string name="status_active">ACTIVE</string>
     <string name="status_paused">PAUSED</string>
-    <string name="pause_reader">Pause Listener</string>
-    <string name="resume_reader">Resume Listener</string>
-    <string name="session_count_label">Session SMS</string>
-    <string name="total_count_label">Total Stored</string>
-    <string name="active_sims_label">Detected SIMs</string>
-    <string name="status_subtext_active">Event-driven standby • Wakes automatically on incoming SMS</string>
-    <string name="status_subtext_paused">Listener paused by user • Incoming SMS will not be stored</string>
-    
+    <string name="pause_listener">Pause Listener</string>
+    <string name="resume_listener">Resume Listener</string>
+    <string name="stat_session">Session SMS</string>
+    <string name="stat_total">Total Stored</string>
+    <string name="stat_sims">Detected SIMs</string>
+    <string name="listener_active_desc">Event-driven standby • Wakes automatically on incoming SMS</string>
+    <string name="listener_paused_desc">Listener paused by user • Incoming SMS will not be stored</string>
     <string name="search_hint">Search by sender, keyword or amount…</string>
     <string name="empty_sms_title">No SMS Messages Yet</string>
     <string name="empty_sms_desc">When payment or transaction SMS messages are received on this device, SkyPay will automatically wake, parse, and store them here.</string>
-    <string name="empty_search_title">No Matching Messages</string>
-    <string name="empty_search_desc">Try searching with a different sender phone number, bank name, or keyword.</string>
-    
+    <string name="no_matching_title">No Matching Messages</string>
+    <string name="no_matching_desc">Try searching with a different sender phone number, bank name, or keyword.</string>
     <string name="permission_required_title">SMS Permissions Required</string>
     <string name="permission_required_desc">SkyPay requires SMS and Phone permissions to detect incoming messages and identify SIM cards.</string>
     <string name="grant_permissions">Grant Permissions</string>
-    
     <string name="dialog_pause_title">Pause SMS Listener?</string>
-    <string name="dialog_pause_message">While paused, incoming SMS messages will not be captured into the local database.</string>
+    <string name="dialog_pause_desc">While paused, incoming SMS messages will not be captured into the local database.</string>
     <string name="dialog_pause_confirm">Yes, Pause</string>
-    <string name="dialog_pause_cancel">Cancel</string>
-    
+    <string name="dialog_cancel">Cancel</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_clear_history">Clear History</string>
     <string name="menu_about">About SkyPay</string>
-    
     <string name="settings_title">Settings</string>
-    <string name="settings_receiver_header">Event-Driven SMS Engine</string>
-    <string name="settings_reader_enabled_label">Enable SMS Capture</string>
-    <string name="settings_reader_enabled_desc">Allow Android system to wake SkyPay when an SMS arrives</string>
-    <string name="settings_payment_gateway_header">Payment Gateway / Webhook (Future)</string>
+    <string name="settings_engine_header">Event-Driven SMS Engine</string>
+    <string name="settings_capture_label">Enable SMS Capture</string>
+    <string name="settings_capture_desc">Allow Android system to wake SkyPay when an SMS arrives</string>
+    <string name="settings_webhook_header">Payment Gateway / Webhook (Future)</string>
     <string name="settings_webhook_url_label">Webhook Endpoint URL</string>
     <string name="settings_webhook_url_hint">https://api.yourdomain.com/webhook/sms</string>
-    <string name="settings_webhook_secret_label">Webhook Secret / API Token</string>
-    <string name="settings_webhook_secret_hint">Enter authentication secret key</string>
+    <string name="settings_webhook_token_label">Webhook Secret / API Token</string>
+    <string name="settings_webhook_token_hint">Enter authentication secret key</string>
     <string name="settings_webhook_enabled_label">Enable Webhook Forwarding</string>
     <string name="settings_webhook_enabled_desc">When enabled, detected SMS messages will be forwarded to your gateway endpoint</string>
-    <string name="settings_save_button">Save Configuration</string>
+    <string name="settings_save">Save Configuration</string>
     <string name="settings_saved_toast">Settings saved successfully</string>
-    
     <string name="detail_title">Message Details</string>
     <string name="detail_sender_label">Sender / Address</string>
     <string name="detail_body_label">Full Message Body</string>
@@ -59,16 +52,15 @@
     <string name="detail_thread_id_label">Thread ID</string>
     <string name="detail_sub_id_label">Subscription ID</string>
     <string name="detail_service_center_label">Service Center</string>
-    <string name="detail_protocol_label">Protocol Identifier</string>
+    <string name="protocol_identifier_label">Protocol Identifier</string>
     <string name="detail_read_status_label">Read Status</string>
     <string name="detail_copy_body">Copy Message</string>
     <string name="detail_delete">Delete Message</string>
     <string name="detail_close">Close</string>
     <string name="copied_toast">Message copied to clipboard</string>
     <string name="deleted_toast">Message deleted</string>
-    <string name="all_cleared_toast">All message history cleared</string>
-    
-    <string name="sim_slot_format">SIM %1$d</string>
+    <string name="history_cleared_toast">All message history cleared</string>
+    <string name="sim_slot_format">SIM %1</string>
     <string name="sim_unknown">SIM (Unknown)</string>
     <string name="unread_status">Unread</string>
     <string name="read_status">Read</string>

@@ -1,141 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/colorBackground"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:title="Custom HTTP Headers"
+        app:titleTextColor="@color/colorTextPrimary" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorBackground"
-            app:title="Headers and Authentication"
-            app:titleTextColor="@color/colorTextPrimary"
-            app:navigationIcon="@drawable/ic_back" />
-    </com.google.android.material.appbar.AppBarLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider" />
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:overScrollMode="never"
+        android:paddingStart="@dimen/dp_screen_margin"
+        android:paddingTop="16dp"
+        android:paddingEnd="@dimen/dp_screen_margin"
+        android:paddingBottom="36dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginBottom="8dp"
-                android:text="HTTP Request Headers"
+                android:letterSpacing="0.06"
+                android:text="HEADER KEY-VALUE PAIRS"
                 android:textColor="@color/colorPrimary"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- Reqable Style Table Card -->
+            <!-- Headers Grid Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="14dp"
+                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardCornerRadius="@dimen/dp_card_radius"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
                 app:strokeColor="@color/colorCardBorder"
-                app:cardBackgroundColor="@color/colorCardBackground">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- Table Header -->
+                    <!-- Header Row -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="36dp"
-                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content"
                         android:background="@color/colorSearchBackground"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingStart="14dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="10dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:paddingStart="14dp"
-                            android:paddingEnd="10dp"
-                            android:text="KEY"
+                            android:text="HEADER NAME"
                             android:textColor="@color/colorTextTertiary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/colorCardBorder" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="10dp"
-                            android:text="VALUE"
+                            android:text="HEADER VALUE"
                             android:textColor="@color/colorTextTertiary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
 
                         <View
-                            android:layout_width="36dp"
-                            android:layout_height="match_parent" />
+                            android:layout_width="24dp"
+                            android:layout_height="1dp" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/colorCardBorder" />
+                        android:background="@color/colorDivider" />
 
-                    <!-- Dynamic Key-Value Rows Container -->
+                    <!-- Dynamic Row Container -->
                     <LinearLayout
                         android:id="@+id/layoutHeadersGridContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="20dp"
-                android:text="Supported dynamic variables: ${auth_token} (webhook secret), ${type} (selected content type), ${sender}, ${body}, ${receive_at}, ${sim_slot}, ${device_id}. New rows appear automatically as you fill the trailing row."
-                android:textColor="@color/colorTextSecondary"
-                android:textSize="12sp"
-                android:lineSpacingMultiplier="1.3" />
+                android:layout_marginTop="12dp"
+                android:text="Headers are appended to outgoing webhook requests. Example: Authorization: Bearer {auth_token}"
+                android:textColor="@color/colorTextTertiary"
+                android:textSize="12sp" />
 
+            <!-- Save Headers Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveHeaders"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:text="Save Headers Configuration"
+                android:layout_height="@dimen/dp_button_height"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_btn_primary_gradient"
+                android:text="Save Headers"
+                android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp"
-                app:backgroundTint="@color/colorPrimary" />
+                app:backgroundTint="@null"
+                app:cornerRadius="14dp"
+                app:elevation="2dp" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </ScrollView>
+</LinearLayout>

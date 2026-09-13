@@ -1,72 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/colorBackground"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        app:title="Settings"
+        app:titleTextColor="@color/colorTextPrimary" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorBackground"
-            app:title="@string/settings_title"
-            app:titleTextColor="@color/colorTextPrimary"
-            app:navigationIcon="@drawable/ic_back" />
-    </com.google.android.material.appbar.AppBarLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider" />
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:overScrollMode="never"
+        android:paddingStart="@dimen/dp_screen_margin"
+        android:paddingTop="12dp"
+        android:paddingEnd="@dimen/dp_screen_margin"
+        android:paddingBottom="36dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
+            <!-- Section 1: Appearance & Display -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Appearance &amp; Display"
+                android:letterSpacing="0.06"
+                android:text="APPEARANCE &amp; DISPLAY"
                 android:textColor="@color/colorPrimary"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardCornerRadius="@dimen/dp_card_radius"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
                 app:strokeColor="@color/colorCardBorder"
-                app:cardBackgroundColor="@color/colorCardBackground">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Theme Selection Row -->
                     <LinearLayout
                         android:id="@+id/rowThemeSelection"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -79,7 +83,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Application Theme"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -96,100 +100,113 @@
                             android:id="@+id/ivThemeChevron"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Expand"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Select" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
-                    <!-- Inline Expandable Theme Options -->
+                    <!-- Expandable Theme Options -->
                     <LinearLayout
                         android:id="@+id/layoutThemeOptions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="@color/colorSearchBackground"
                         android:visibility="gone">
 
-                        <LinearLayout
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorDivider" />
+
+                        <RelativeLayout
                             android:id="@+id/optionThemeSystem"
                             android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
+                            android:layout_height="52dp"
+                            android:background="?attr/selectableItemBackground"
                             android:paddingStart="24dp"
-                            android:paddingEnd="20dp"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:paddingEnd="18dp">
+
                             <TextView
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_centerVertical="true"
                                 android:text="System Default"
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:id="@+id/ivCheckThemeSystem"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone" />
-                        </LinearLayout>
+                                app:tint="@color/colorPrimary" />
+                        </RelativeLayout>
 
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorDivider" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/optionThemeLight"
                             android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
+                            android:layout_height="52dp"
+                            android:background="?attr/selectableItemBackground"
                             android:paddingStart="24dp"
-                            android:paddingEnd="20dp"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:paddingEnd="18dp">
+
                             <TextView
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Light"
+                                android:layout_centerVertical="true"
+                                android:text="Light Theme"
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:id="@+id/ivCheckThemeLight"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone" />
-                        </LinearLayout>
+                                android:visibility="gone"
+                                app:tint="@color/colorPrimary" />
+                        </RelativeLayout>
 
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorDivider" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/optionThemeDark"
                             android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
+                            android:layout_height="52dp"
+                            android:background="?attr/selectableItemBackground"
                             android:paddingStart="24dp"
-                            android:paddingEnd="20dp"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:paddingEnd="18dp">
+
                             <TextView
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Dark"
+                                android:layout_centerVertical="true"
+                                android:text="Dark Theme"
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:id="@+id/ivCheckThemeDark"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone" />
-                        </LinearLayout>
+                                android:visibility="gone"
+                                app:tint="@color/colorPrimary" />
+                        </RelativeLayout>
                     </LinearLayout>
 
                     <View
@@ -197,15 +214,16 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Screen Orientation Row -->
                     <LinearLayout
                         android:id="@+id/rowOrientationSelection"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -218,7 +236,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Screen Orientation"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -235,100 +253,182 @@
                             android:id="@+id/ivOrientationChevron"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Expand"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Select" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
-                    <!-- Inline Expandable Orientation Options -->
+                    <!-- Expandable Orientation Options -->
                     <LinearLayout
                         android:id="@+id/layoutOrientationOptions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="@color/colorSearchBackground"
                         android:visibility="gone">
 
-                        <LinearLayout
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorDivider" />
+
+                        <RelativeLayout
                             android:id="@+id/optionOrientationSystem"
                             android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
+                            android:layout_height="52dp"
+                            android:background="?attr/selectableItemBackground"
                             android:paddingStart="24dp"
-                            android:paddingEnd="20dp"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:paddingEnd="18dp">
+
                             <TextView
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="System Default"
+                                android:layout_centerVertical="true"
+                                android:text="Sensor / System"
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:id="@+id/ivCheckOrientationSystem"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone" />
-                        </LinearLayout>
+                                app:tint="@color/colorPrimary" />
+                        </RelativeLayout>
 
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorDivider" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/optionOrientationPortrait"
                             android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
+                            android:layout_height="52dp"
+                            android:background="?attr/selectableItemBackground"
                             android:paddingStart="24dp"
-                            android:paddingEnd="20dp"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:paddingEnd="18dp">
+
                             <TextView
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Portrait"
+                                android:layout_centerVertical="true"
+                                android:text="Always Portrait"
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:id="@+id/ivCheckOrientationPortrait"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone" />
-                        </LinearLayout>
+                                android:visibility="gone"
+                                app:tint="@color/colorPrimary" />
+                        </RelativeLayout>
 
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorDivider" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorDivider" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/optionOrientationLandscape"
                             android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
+                            android:layout_height="52dp"
+                            android:background="?attr/selectableItemBackground"
                             android:paddingStart="24dp"
-                            android:paddingEnd="20dp"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:paddingEnd="18dp">
+
                             <TextView
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Landscape"
+                                android:layout_centerVertical="true"
+                                android:text="Always Landscape"
                                 android:textColor="@color/colorTextPrimary"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:id="@+id/ivCheckOrientationLandscape"
-                                android:layout_width="18dp"
-                                android:layout_height="18dp"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/colorPrimary"
-                                android:visibility="gone" />
+                                android:visibility="gone"
+                                app:tint="@color/colorPrimary" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Section 2: SMS Engine & Notifications -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.06"
+                android:text="SMS ENGINE &amp; NOTIFICATIONS"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardCornerRadius="@dimen/dp_card_radius"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/colorCardBorder"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Real-Time SMS Capture Toggle -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Real-Time SMS Capture"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Listen for incoming merchant payment SMS"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="12sp" />
                         </LinearLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switchSettingsCapture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:useMaterialThemeColors="true" />
                     </LinearLayout>
 
                     <View
@@ -336,12 +436,14 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Haptic Feedback Toggle -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
                         android:gravity="center_vertical"
-                        android:padding="16dp">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -354,14 +456,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="Haptic Feedback"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Subtle vibrations on interaction"
+                                android:text="Vibrate on tap and critical events"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -369,71 +471,8 @@
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchHapticFeedback"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginBottom="8dp"
-                android:text="SMS Engine &amp; Notifications"
-                android:textColor="@color/colorPrimary"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/colorCardBorder"
-                app:cardBackgroundColor="@color/colorCardBackground">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="16dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Event-Driven SMS Capture"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Capture transactions when SMS arrives"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/switchSettingsCapture"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            app:useMaterialThemeColors="true" />
                     </LinearLayout>
 
                     <View
@@ -441,12 +480,14 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Hide System Notifications Toggle -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
                         android:gravity="center_vertical"
-                        android:padding="16dp">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -459,14 +500,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="Hide Notifications"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Suppress notification popups while maintaining background processing"
+                                android:text="Suppress persistent background alerts"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -474,7 +515,8 @@
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchHideNotifications"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            app:useMaterialThemeColors="true" />
                     </LinearLayout>
 
                     <View
@@ -482,15 +524,16 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Muted Senders Row -->
                     <LinearLayout
                         android:id="@+id/rowMutedSenders"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -503,14 +546,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="Muted Senders"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Manage senders with muted alerts"
+                                android:text="Filter numbers ignored by gateway"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -518,47 +561,51 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Open"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Open" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Section 3: Integration & Server -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="Integration &amp; Server"
+                android:letterSpacing="0.06"
+                android:text="INTEGRATION &amp; SERVER"
                 android:textColor="@color/colorPrimary"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardCornerRadius="@dimen/dp_card_radius"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
                 app:strokeColor="@color/colorCardBorder"
-                app:cardBackgroundColor="@color/colorCardBackground">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Webhook Forwarding -->
                     <LinearLayout
                         android:id="@+id/rowWebhookForwarding"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -571,14 +618,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="Webhook Forwarding"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Forward payment SMS to remote endpoint"
+                                android:text="Configure target server URL &amp; tokens"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -586,8 +633,9 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Open"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Open" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
                     <View
@@ -595,15 +643,16 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Custom Headers -->
                     <LinearLayout
                         android:id="@+id/rowHeaders"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -614,16 +663,16 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Headers"
+                                android:text="Custom Headers"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Configure request headers and authentication"
+                                android:text="Add authorization &amp; custom metadata headers"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -631,8 +680,9 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Open"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Open" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
                     <View
@@ -640,15 +690,16 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Request Body Structure -->
                     <LinearLayout
                         android:id="@+id/rowPostBody"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -659,16 +710,16 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Post Body"
+                                android:text="Request Body Format"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Configure request body fields"
+                                android:text="Customize JSON parameters &amp; method"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -676,8 +727,9 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Open"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Open" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
                     <View
@@ -685,15 +737,16 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Pending Queue Messages -->
                     <LinearLayout
                         android:id="@+id/rowQueueMessages"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -704,9 +757,9 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Queue Messages"
+                                android:text="Pending Messages Queue"
                                 android:textColor="@color/colorTextPrimary"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -714,7 +767,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Review and retry failed webhook deliveries"
+                                android:text="0 pending delivery retry"
                                 android:textColor="@color/colorTextSecondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -722,47 +775,51 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Open"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Open" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Section 4: Support & Account -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="Account &amp; Support"
+                android:letterSpacing="0.06"
+                android:text="SUPPORT &amp; SYSTEM"
                 android:textColor="@color/colorPrimary"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardCornerRadius="@dimen/dp_card_radius"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
                 app:strokeColor="@color/colorCardBorder"
-                app:cardBackgroundColor="@color/colorCardBackground">
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Help & Docs -->
                     <LinearLayout
                         android:id="@+id/rowHelp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <TextView
                             android:layout_width="0dp"
@@ -770,14 +827,15 @@
                             android:layout_weight="1"
                             android:text="Help &amp; Documentation"
                             android:textColor="@color/colorTextPrimary"
-                            android:textSize="15sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Open"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Open" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
                     <View
@@ -785,15 +843,16 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- About SkyPay -->
                     <LinearLayout
                         android:id="@+id/rowAbout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <TextView
                             android:layout_width="0dp"
@@ -801,14 +860,15 @@
                             android:layout_weight="1"
                             android:text="About SkyPay"
                             android:textColor="@color/colorTextPrimary"
-                            android:textSize="15sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Open"
                             android:src="@drawable/ic_chevron_right"
-                            android:contentDescription="Open" />
+                            app:tint="@color/colorTextTertiary" />
                     </LinearLayout>
 
                     <View
@@ -816,35 +876,37 @@
                         android:layout_height="1dp"
                         android:background="@color/colorDivider" />
 
+                    <!-- Sign Out Row -->
                     <LinearLayout
                         android:id="@+id/rowLogout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="64dp"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:orientation="horizontal"
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Sign Out"
-                            android:textColor="#EF4444"
-                            android:textSize="15sp"
+                            android:text="Sign Out of Gateway"
+                            android:textColor="@color/colorDanger"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:contentDescription="Sign Out"
                             android:src="@drawable/ic_logout"
-                            android:contentDescription="Logout" />
+                            app:tint="@color/colorDanger" />
                     </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </ScrollView>
+</LinearLayout>

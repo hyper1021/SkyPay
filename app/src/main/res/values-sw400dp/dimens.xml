@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="screen_padding">16dp</dimen>
-    <dimen name="card_padding">16dp</dimen>
-    <dimen name="card_margin">10dp</dimen>
-    <dimen name="header_logo_size">36dp</dimen>
-    <dimen name="splash_logo_size">72dp</dimen>
-    <dimen name="login_logo_size">64dp</dimen>
-    <dimen name="stat_number_size">22sp</dimen>
-    <dimen name="stat_card_padding">14dp</dimen>
-    <dimen name="chart_height">160dp</dimen>
+    <dimen name="dp_screen_margin">24dp</dimen>
+    <dimen name="dp_stat_tile_height">96dp</dimen>
+    <dimen name="login_logo_size">80dp</dimen>
+    <dimen name="dp_button_height">52dp</dimen>
+    <dimen name="dp_input_height">52dp</dimen>
 </resources>

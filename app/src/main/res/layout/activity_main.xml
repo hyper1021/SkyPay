@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:fitsSystemWindows="true">
+    android:background="@color/colorBackground">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -18,35 +17,38 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorBackground"
             app:contentInsetStart="16dp"
-            app:contentInsetStartWithNavigation="16dp">
+            app:contentInsetStartWithNavigation="16dp"
+            app:elevation="0dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/ivHeaderLogo"
-                    android:layout_width="@dimen/header_logo_size"
-                    android:layout_height="@dimen/header_logo_size"
-                    
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_skypay_logo"
-                    android:contentDescription="@string/app_name" />
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:contentDescription="@string/app_name"
+                    app:srcCompat="@drawable/ic_skypay_logo" />
 
                 <TextView
-                    android:id="@+id/tvHeaderTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="sans-serif-medium"
                     android:text="@string/app_name"
                     android:textColor="@color/colorTextPrimary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
         </androidx.appcompat.widget.Toolbar>
+
+        <!-- Flat 1dp Divider line below toolbar -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -58,321 +60,29 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:overScrollMode="never"
+            android:paddingStart="@dimen/dp_screen_margin"
+            android:paddingTop="16dp"
+            android:paddingEnd="@dimen/dp_screen_margin"
+            android:paddingBottom="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="24dp">
+                android:orientation="vertical">
 
+                <!-- Permission Warning Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardPermissionWarning"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="16dp"
                     android:visibility="gone"
-                    app:cardCornerRadius="14dp"
+                    app:cardBackgroundColor="#FFFBEB"
+                    app:cardCornerRadius="@dimen/dp_card_radius_small"
                     app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#FCD34D"
-                    app:cardBackgroundColor="#FFFBEB">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:padding="12dp">
-
-                        <ImageView
-                            android:layout_width="26dp"
-                            android:layout_height="26dp"
-                            android:src="@drawable/ic_warning"
-                            android:contentDescription="Warning" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/permission_required_title"
-                                android:textColor="#92400E"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="@string/permission_required_desc"
-                                android:textColor="#B45309"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/btnGrantPermissions"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:text="Grant"
-                            android:textColor="#FFFFFF"
-                            android:textSize="11sp"
-                            android:backgroundTint="#D97706"
-                            app:cornerRadius="8dp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginTop="6dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvWelcomeUser"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Overview &amp; Analytics"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvListenerModeSubtext"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Event-driven standby • Wakes on SMS"
-                            android:textColor="@color/colorTextSecondary"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvStatusBadge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_status_active"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:text="@string/status_active"
-                        android:textColor="@color/colorSuccessDark"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginTop="14dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="5dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/colorCardBorder"
-                        app:cardBackgroundColor="@color/colorCardBackground">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Today"
-                                android:textColor="@color/colorTextTertiary"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvStatToday"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="0"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="Captured Messages"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/colorCardBorder"
-                        app:cardBackgroundColor="@color/colorCardBackground">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Total Captured"
-                                android:textColor="@color/colorTextTertiary"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvStatTotal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="0"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="All Time Total"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="5dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/colorCardBorder"
-                        app:cardBackgroundColor="@color/colorCardBackground">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Last 7 Days"
-                                android:textColor="@color/colorTextTertiary"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvStat7Days"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="0"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        app:cardCornerRadius="14dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/colorCardBorder"
-                        app:cardBackgroundColor="@color/colorCardBackground">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Last 30 Days"
-                                android:textColor="@color/colorTextTertiary"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvStat30Days"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="0"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginTop="14dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/colorCardBorder"
-                    app:cardBackgroundColor="@color/colorCardBackground">
+                    app:strokeColor="@color/colorWarningDark"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -380,16 +90,289 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SMS Permissions Required"
+                            android:textColor="@color/colorWarningDark"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Grant RECEIVE_SMS and READ_SMS to enable automatic transaction captures."
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGrantPermissions"
+                            style="@style/Widget.SkyPay.Button.Outlined"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Grant Permissions"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Active Status Banner Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Pill badge container -->
+                    <TextView
+                        android:id="@+id/tvStatusBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_status_active"
+                        android:paddingStart="8dp"
+                        android:paddingTop="3dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="3dp"
+                        android:text="@string/status_active"
+                        android:textColor="#006644"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvListenerModeSubtext"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Event-driven standby • Wakes on SMS"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Stat Tiles (2x2 Grid) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal">
+
+                    <!-- Today -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_stat_tile_height"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorCardBackground"
+                        app:cardCornerRadius="@dimen/dp_card_radius_small"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/colorCardBorder"
+                        app:strokeWidth="1dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Today"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tvStatToday"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="0"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Captured Messages"
+                                android:textColor="@color/colorTextTertiary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Total Captured -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_stat_tile_height"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorCardBackground"
+                        app:cardCornerRadius="@dimen/dp_card_radius_small"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/colorCardBorder"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Captured"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tvStatTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="0"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="All Time"
+                                android:textColor="@color/colorTextTertiary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <!-- Last 7 Days -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_stat_tile_height"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorCardBackground"
+                        app:cardCornerRadius="@dimen/dp_card_radius_small"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/colorCardBorder"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Last 7 Days"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tvStat7Days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="0"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Captured Messages"
+                                android:textColor="@color/colorTextTertiary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Last 30 Days -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_stat_tile_height"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/colorCardBackground"
+                        app:cardCornerRadius="@dimen/dp_card_radius_small"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/colorCardBorder"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Last 30 Days"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tvStat30Days"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="0"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Captured Messages"
+                                android:textColor="@color/colorTextTertiary"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- SMS Activity Chart Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_section_gap"
+                    app:cardBackgroundColor="@color/colorCardBackground"
+                    app:cardCornerRadius="@dimen/dp_card_radius"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/colorCardBorder"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -407,71 +390,76 @@
                                     android:layout_marginTop="2dp"
                                     android:text="Tap bar for date details"
                                     android:textColor="@color/colorTextSecondary"
-                                    android:textSize="11sp" />
+                                    android:textSize="12sp" />
                             </LinearLayout>
 
+                            <!-- 7D / 30D Pill Toggle -->
                             <LinearLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="32dp"
-                                android:background="@drawable/bg_search_field"
-                                android:padding="2dp">
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:background="@color/colorSearchBackground"
+                                android:padding="3dp">
 
                                 <TextView
                                     android:id="@+id/btnMode7Days"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:background="@drawable/bg_btn_primary"
                                     android:paddingStart="12dp"
+                                    android:paddingTop="5dp"
                                     android:paddingEnd="12dp"
-                                    android:gravity="center"
+                                    android:paddingBottom="5dp"
                                     android:text="7D"
                                     android:textColor="#FFFFFF"
-                                    android:textSize="11sp"
+                                    android:textSize="12sp"
                                     android:textStyle="bold" />
 
                                 <TextView
                                     android:id="@+id/btnMode30Days"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:background="@android:color/transparent"
                                     android:paddingStart="12dp"
+                                    android:paddingTop="5dp"
                                     android:paddingEnd="12dp"
-                                    android:gravity="center"
+                                    android:paddingBottom="5dp"
                                     android:text="30D"
                                     android:textColor="@color/colorTextSecondary"
-                                    android:textSize="11sp"
+                                    android:textSize="12sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
-                        </LinearLayout>
+                        </RelativeLayout>
 
+                        <!-- Bar Chart Container -->
                         <HorizontalScrollView
                             android:id="@+id/scrollChart"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="14dp"
-                            android:fillViewport="true"
+                            android:layout_marginTop="16dp"
+                            android:overScrollMode="never"
                             android:scrollbars="none">
 
                             <com.pay.sky.ui.view.SmsBarChartView
                                 android:id="@+id/barChartView"
                                 android:layout_width="match_parent"
-                                android:layout_height="170dp" />
+                                android:layout_height="140dp" />
                         </HorizontalScrollView>
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Top SMS Sources Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginTop="14dp"
-                    app:cardCornerRadius="16dp"
+                    android:layout_marginTop="@dimen/dp_section_gap"
+                    app:cardBackgroundColor="@color/colorCardBackground"
+                    app:cardCornerRadius="@dimen/dp_card_radius"
                     app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
                     app:strokeColor="@color/colorCardBorder"
-                    app:cardBackgroundColor="@color/colorCardBackground">
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -493,43 +481,48 @@
                             android:layout_marginTop="2dp"
                             android:text="Top 5 sources ranked by volume"
                             android:textColor="@color/colorTextSecondary"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:background="@color/colorDivider" />
+
+                        <!-- Dynamic Source Rows Container -->
                         <LinearLayout
                             android:id="@+id/layoutSenderAnalytics"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
                             android:orientation="vertical" />
 
                         <TextView
                             android:id="@+id/tvEmptySenders"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="8dp"
                             android:gravity="center"
-                            android:padding="16dp"
-                            android:text="No transaction data captured yet"
+                            android:text="No sender analytics recorded yet"
                             android:textColor="@color/colorTextTertiary"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             android:visibility="gone" />
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <LinearLayout
+                <!-- Recent Messages Section Header -->
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_marginTop="@dimen/dp_section_gap"
+                    android:layout_marginBottom="12dp">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
                         android:text="Recent Messages"
                         android:textColor="@color/colorTextPrimary"
                         android:textSize="15sp"
@@ -539,46 +532,33 @@
                         android:id="@+id/tvTotalMessagesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
                         android:text="0 records"
-                        android:textColor="@color/colorTextTertiary"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
 
+                <!-- Empty Recent Messages View -->
                 <LinearLayout
                     android:id="@+id/layoutEmptyRecent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="28dp"
+                    android:paddingTop="36dp"
+                    android:paddingBottom="36dp"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_message"
-                        android:alpha="0.3"
-                        android:contentDescription="No SMS" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/empty_sms_title"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center"
-                        android:text="@string/empty_sms_desc"
-                        android:textColor="@color/colorTextSecondary"
-                        android:textSize="12sp" />
+                        android:text="No recent messages captured"
+                        android:textColor="@color/colorTextTertiary"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
+                <!-- Recent SMS RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvRecentSms"
                     android:layout_width="match_parent"
@@ -588,4 +568,5 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

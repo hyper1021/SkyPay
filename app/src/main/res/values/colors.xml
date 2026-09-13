@@ -1,25 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0284C7</color>
-    <color name="colorPrimaryVariant">#0369A1</color>
+    <!-- Brand Primary -->
+    <color name="colorPrimary">#0052CC</color>
+    <color name="colorPrimaryVariant">#003D99</color>
     <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorSecondary">#1E3A8A</color>
-    <color name="colorSecondaryVariant">#172554</color>
+
+    <!-- Brand Secondary / Accent -->
+    <color name="colorSecondary">#00B8D9</color>
+    <color name="colorSecondaryVariant">#006B7D</color>
     <color name="colorOnSecondary">#FFFFFF</color>
-    <color name="colorBackground">#F8FAFC</color>
+
+    <!-- Surfaces & Backgrounds -->
+    <color name="colorBackground">#F0F4FF</color>
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorCardBackground">#FFFFFF</color>
-    <color name="colorCardBorder">#E2E8F0</color>
-    <color name="colorTextPrimary">#0F172A</color>
-    <color name="colorTextSecondary">#64748B</color>
-    <color name="colorTextTertiary">#94A3B8</color>
-    <color name="colorSearchBackground">#F1F5F9</color>
-    <color name="colorSecondaryButton">#F8FAFC</color>
-    <color name="colorSuccess">#10B981</color>
-    <color name="colorSuccessDark">#15803D</color>
-    <color name="colorWarning">#F59E0B</color>
-    <color name="colorWarningDark">#B45309</color>
-    <color name="colorDanger">#EF4444</color>
-    <color name="colorDangerDark">#B91C1C</color>
-    <color name="colorDivider">#E2E8F0</color>
+    <color name="colorCardBorder">#DDEAFF</color>
+    <color name="colorDivider">#DDEAFF</color>
+    <color name="colorSearchBackground">#E8EEFF</color>
+    <color name="colorSecondaryButton">#F0F4FF</color>
+
+    <!-- Typography -->
+    <color name="colorTextPrimary">#091E42</color>
+    <color name="colorTextSecondary">#5E6C84</color>
+    <color name="colorTextTertiary">#97A0AF</color>
+
+    <!-- Status & Alerts -->
+    <color name="colorSuccess">#00875A</color>
+    <color name="colorSuccessDark">#006644</color>
+    <color name="colorWarning">#FF991F</color>
+    <color name="colorWarningDark">#CC7A00</color>
+    <color name="colorDanger">#DE350B</color>
+    <color name="colorDangerDark">#BF2600</color>
+
+    <!-- New Design Tokens -->
+    <color name="colorGradientStart">#0052CC</color>
+    <color name="colorGradientEnd">#00B8D9</color>
+    <color name="colorLoginBackground">#0A1628</color>
+    <color name="colorInputBackground">#1C2B4A</color>
+    <color name="colorActiveGlow">#00B8D9</color>
 </resources>
